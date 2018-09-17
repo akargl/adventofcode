@@ -1,5 +1,3 @@
-const input = [4, 1, 15, 12, 0, 9, 9, 5, 5, 8, 7, 3, 14, 5, 12, 3];
-
 /**
  * 
  * @param {number[]} origVals 
@@ -81,6 +79,7 @@ function naive(startVals) {
  * @returns {number} number of redistribution cycles needed
  */
 function brentAlgo(startVals) {
+    console.log(startVals);
     //main phase: search successive powers of two
     let power = 1, lam = 1;
     let tortoise = startVals.slice();
@@ -115,7 +114,15 @@ function brentAlgo(startVals) {
     return mu + lam;
 }
 
-console.time();
-let steps = brentAlgo(input);
-console.timeEnd();
+const defaultInput = [4, 1, 15, 12, 0, 9, 9, 5, 5, 8, 7, 3, 14, 5, 12, 3];
+//get user supplied arguments and convert to numbers
+let argNumbers = process.argv.slice(2).map((x) => parseInt(x));
+
+if (!argNumbers.length) {
+    argNumbers = defaultInput;
+}
+
+console.time("cycle detection");
+let steps = brentAlgo(argNumbers);
+console.timeEnd("cycle detection");
 console.log(steps);

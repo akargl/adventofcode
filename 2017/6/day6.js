@@ -30,8 +30,27 @@ function redistribute(origVals) {
  * @param {[]} a1 
  * @param {[]} a2 
  */
-function arrayCompare(a1, a2) {
+function arrayCompareStringify(a1, a2) {
     return JSON.stringify(a1) === JSON.stringify(a2);
+}
+
+/**
+ * Flat primitive array comparison
+ * @param {[]} a1 
+ * @param {[]} a2 
+ */
+function arrayCompareLoop(a1, a2) {
+    if (a1.length !== a2.length) {
+        return false;
+    }
+
+    for (let index = 0; index < a1.length; index++) {
+        if (a1[index] !== a2[index]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -45,7 +64,7 @@ function naive(vals) {
 
     let count = 1;
 
-    while (!(seenVariants.find((x) => arrayCompare(x, newVariant)))) {
+    while (!(seenVariants.find((x) => arrayCompareLoop(x, newVariant)))) {
         seenVariants.push(newVariant);
 
         newVariant = redistribute(newVariant);
@@ -55,5 +74,7 @@ function naive(vals) {
     return count;
 }
 
+console.time();
 let steps = naive(input);
+console.timeEnd();
 console.log(steps);

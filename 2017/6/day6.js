@@ -55,12 +55,13 @@ function arrayCompareLoop(a1, a2) {
 
 /**
  * 
- * @param {number[]} vals 
+ * @param {number[]} startVals 
+ * @returns {number} number of redistribution cycles needed
  */
-function naive(vals) {
-    let seenVariants = [vals];
+function naive(startVals) {
+    let seenVariants = [startVals];
 
-    let newVariant = redistribute(vals);
+    let newVariant = redistribute(startVals);
 
     let count = 1;
 
@@ -74,7 +75,47 @@ function naive(vals) {
     return count;
 }
 
+/**
+ * Brents cycle detection algorithm
+ * @param {number[]} startVals 
+ * @returns {number} number of redistribution cycles needed
+ */
+function brentAlgo(startVals) {
+    //main phase: search successive powers of two
+    let power = 1, lam = 1;
+    let tortoise = startVals.slice();
+    let hare = redistribute(startVals);
+
+    while (!arrayCompareLoop(tortoise, hare)) {
+        //time to start a new power of two?
+        if (power === lam) {
+            tortoise = hare.slice();
+            power *= 2;
+            lam = 0;
+        }
+        hare = redistribute(hare);
+        lam++;
+    }
+
+    //Find the position of the first repetition of length lam
+    let mu = 0;
+    tortoise = startVals.slice();
+    hare = startVals.slice();
+    for (let i = 0; i < lam; i++) {
+        hare = redistribute(hare);
+    }
+    //The distance between the hare and tortoise is now lam.
+    //Next, the hare and tortoise move at same speed until they agree
+    while (!arrayCompareLoop(tortoise, hare)) {
+        tortoise = redistribute(tortoise);
+        hare = redistribute(hare);
+        mu++;
+    }
+
+    return mu + lam;
+}
+
 console.time();
-let steps = naive(input);
+let steps = brentAlgo(input);
 console.timeEnd();
 console.log(steps);

@@ -31,10 +31,11 @@ function part2(numbers) {
 
     let sumGen = numGen(numbers);
 
-    let encounteredSums = [];
+    // faster inclusion lookup than list
+    let encounteredSums = new Set();
     let currentSum = sumGen.next().value;
-    while (!encounteredSums.includes(currentSum)) {
-        encounteredSums.push(currentSum);
+    while (!encounteredSums.has(currentSum)) {
+        encounteredSums.add(currentSum);
         currentSum = sumGen.next().value;
     }
 
@@ -59,7 +60,7 @@ let part1Res = part1(numbers);
 console.timeEnd("part1");
 console.log(`part 1 result: ${part1Res}`);
 
-console.time("part1");
+console.time("part2");
 let part2Res = part2(numbers);
-console.timeEnd("part1");
+console.timeEnd("part2");
 console.log(`part 2 result: ${part2Res}`);

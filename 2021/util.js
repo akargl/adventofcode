@@ -10,9 +10,14 @@ function getInput(fName = process.stdin.fd) {
  * @returns {number[]}
  */
 module.exports.inputToNumbers = (fName) => {
+    return this.toLines(fName)
+        .map((x) => parseInt(x));
+}
+
+
+module.exports.toLines = (fName) => {
     let input = getInput(fName);
-    let numbers = input.split("\n")
-        .map((x) => parseInt(x))
-        .filter((x) => !isNaN(x));
-    return numbers;
+    let lines = input.split("\n")
+        .filter(x => x.trim() !== "");
+    return lines;
 }

@@ -17,7 +17,9 @@ module.exports.inputToNumbers = (fName) => {
 
 module.exports.toLines = (fName) => {
     let input = getInput(fName);
-    let lines = input.split("\n")
+    let lines = input
+        .replaceAll("\r", "")
+        .split("\n")
         .filter(x => x.trim() !== "");
     return lines;
 }

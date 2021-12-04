@@ -15,11 +15,15 @@ module.exports.inputToNumbers = (fName) => {
 }
 
 
-module.exports.toLines = (fName) => {
+module.exports.toLines = (fName, includeEmptyLines = false) => {
     let input = getInput(fName);
     let lines = input
         .replaceAll("\r", "")
-        .split("\n")
-        .filter(x => x.trim() !== "");
+        .split("\n");
+
+    if (!includeEmptyLines) {
+        lines = lines.filter(x => x.trim() !== "");
+    }
+
     return lines;
 }

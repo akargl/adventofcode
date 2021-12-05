@@ -83,7 +83,7 @@ function play(lines, playToFirstWinner) {
 
 const util = require("./util");
 
-let lines = util.toLines("2021/input4_1.txt", true);
+let lines = util.toLines("2021/inputs/input4_1.txt", true);
 
 let p1Score = play(lines, true);
 console.log(`p1: ${p1Score}`);

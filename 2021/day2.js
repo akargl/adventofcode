@@ -60,7 +60,7 @@ function part2(lines) {
 
 const util = require("./util");
 
-let lines = util.toLines("2021/input2_1.txt");
+let lines = util.toLines("2021/inputs/input2_1.txt");
 
 let positionP1 = part1(lines);
 console.log(`Part1: forward ${positionP1.forward} * depth ${positionP1.depth} = ${positionP1.forward * positionP1.depth}`);

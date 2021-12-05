@@ -1,6 +1,6 @@
 const util = require("./util");
 
-let numbers = util.inputToNumbers("2021/input1_1.txt");
+let numbers = util.inputToNumbers("2021/inputs/input1_1.txt");
 
 let resPart1 = numbers.map((_, i) => numbers[i+1] -numbers[i])
     .filter(x => x > 0)

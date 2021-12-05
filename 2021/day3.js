@@ -47,7 +47,7 @@ function part2Helper(lines, bitCompFunc) {
 
 const util = require("./util");
 
-let lines = util.toLines("2021/input3_1.txt");
+let lines = util.toLines("2021/inputs/input3_1.txt");
 
 let p1Res = part1(lines);
 console.log(`Part1: gamma ${p1Res.gamma} * epsilon ${p1Res.epsilon} = ${p1Res.epsilon * p1Res.gamma}`);

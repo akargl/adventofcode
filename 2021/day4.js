@@ -32,23 +32,15 @@ function parseBoards(lines) {
 }
 
 function checkIfBoardHasWon(board) {
-    for (const row of board) {
-        if (row.every(x => x === "")) {
-            return true;
-        }
-    }
-
-    for (let column = 0; column < board[0].length; column++) {
-        let allMarked = true;
-        for (let row = 0; row < board.length; row++) {
-            if (board[row][column] !== "") {
-                allMarked = false;
+    for (let i = 0; i < 2; i++) {
+        for (const row of board) {
+            if (row.every(x => x === "")) {
+                return true;
             }
         }
-
-        if (allMarked) {
-            return true;
-        }
+    
+        //transpose board
+        board = board[0].map((_, col) => board.map((row) => row[col]));
     }
 
     return false;

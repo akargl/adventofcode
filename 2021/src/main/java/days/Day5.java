@@ -1,7 +1,6 @@
 package days;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import utils.InputUtils;
 
 public class Day5 {
   @Data
@@ -75,12 +75,6 @@ public class Day5 {
     ).map(points -> new VentLine(points.get(0), points.get(1))).toList();
   }
 
-  static List<String> getInputLines(Path inputPath) throws IOException {
-    return Files.lines(inputPath)
-        .filter(l -> !l.trim().equals(""))
-        .collect(Collectors.toList());
-  }
-
   static Set<Vector> getDuplicatePoints(List<VentLine> ventLines) {
     List<Vector> allPoints = ventLines.stream()
         .map(VentLine::getAllPointsOnLine)
@@ -91,7 +85,7 @@ public class Day5 {
   }
 
   public static void main(String[] args) throws IOException {
-    List<String> inputLines = getInputLines(Path.of("inputs/input5_1.txt"));
+    List<String> inputLines = InputUtils.getInputLines(Path.of("inputs/input5_1.txt"), false);
     List<VentLine> ventLines = parseInput(inputLines);
 
     Set<Vector> duplicatePointsPart1 = getDuplicatePoints(ventLines.stream()

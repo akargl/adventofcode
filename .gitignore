@@ -106,3 +106,4 @@ typings/
 
 /2021/target/
 /2021/.idea
+/2021/outputs*/*.png

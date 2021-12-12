@@ -27,7 +27,7 @@ public class Day7 {
   }
 
   public static void main(String[] args) throws IOException {
-    List<Integer> initialPositions = Arrays.stream(InputUtils.getInputLines(Path.of("inputs/input7_sample.txt"), false).get(0).split(","))
+    List<Integer> initialPositions = Arrays.stream(InputUtils.getInputLines(Path.of("inputs/input7_1.txt"), false).get(0).split(","))
         .map(Integer::parseInt).collect(Collectors.toList());
 
     long minCostPart1 = getMinCost(initialPositions, (p, moveTo) -> Math.abs(p - moveTo));

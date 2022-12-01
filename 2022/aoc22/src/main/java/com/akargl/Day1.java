@@ -24,7 +24,9 @@ public class Day1 {
   protected static int part2(String input) {
     List<Integer> sums = inputToSums(input);
     Collections.sort(sums, Collections.reverseOrder());
-    return sums.get(0) + sums.get(1) + sums.get(2);
+    Integer sum = sums.subList(0, Math.min(3, sums.size())).stream()
+        .collect(Collectors.summingInt(Integer::intValue));
+    return sum;
   }
 
   protected static List<Integer> inputToSums(String input) {

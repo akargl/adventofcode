@@ -19,9 +19,9 @@ class Day2Test {
 
   @Test
   void getOutcome() {
-    assertEquals(3, Day2.getOutcome(Day2.Choice.ROCK, Day2.Choice.ROCK));
-    assertEquals(6, Day2.getOutcome(Day2.Choice.PAPER, Day2.Choice.SCISSORS));
-    assertEquals(0, Day2.getOutcome(Day2.Choice.SCISSORS, Day2.Choice.PAPER));
+    assertEquals(Day2.Outcome.DRAW, Day2.getOutcome(Day2.Choice.ROCK, Day2.Choice.ROCK));
+    assertEquals(Day2.Outcome.WIN, Day2.getOutcome(Day2.Choice.PAPER, Day2.Choice.SCISSORS));
+    assertEquals(Day2.Outcome.LOSE, Day2.getOutcome(Day2.Choice.SCISSORS, Day2.Choice.PAPER));
   }
 
   @Test
@@ -31,7 +31,6 @@ class Day2Test {
 
   @Test
   void getRequiredChoice() {
-    // X = lose, Y = draw, Z = win
     assertEquals(Day2.Choice.SCISSORS, Day2.getRequiredChoice(Day2.Choice.PAPER, Day2.Outcome.WIN));
     assertEquals(Day2.Choice.ROCK, Day2.getRequiredChoice(Day2.Choice.PAPER, Day2.Outcome.LOSE));
     assertEquals(Day2.Choice.PAPER, Day2.getRequiredChoice(Day2.Choice.PAPER, Day2.Outcome.DRAW));

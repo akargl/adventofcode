@@ -79,22 +79,22 @@ public class Day2 {
     Choice opponentChoice = Choice.find(tokens[0]);
     Choice ownChoice = parseOwnChoiceFn.apply(opponentChoice, tokens[1]);
 
-    int outcomePoints = getOutcome(opponentChoice, ownChoice);
+    int outcomePoints = getOutcome(opponentChoice, ownChoice).getPoints();
     return outcomePoints + ownChoice.getScore();
   }
 
-  protected static int getOutcome(Choice opponentChoice, Choice ownChoice) {
+  protected static Outcome getOutcome(Choice opponentChoice, Choice ownChoice) {
     if (opponentChoice == ownChoice) {
-      return 3;
+      return Outcome.DRAW;
     }
 
     if ((opponentChoice == Choice.ROCK && ownChoice == Choice.PAPER) ||
         (opponentChoice == Choice.PAPER && ownChoice == Choice.SCISSORS) ||
         (opponentChoice == Choice.SCISSORS && ownChoice == Choice.ROCK)) {
-      return 6;
+      return Outcome.WIN;
     }
 
-    return 0;
+    return Outcome.LOSE;
   }
 
   protected static Choice getRequiredChoice(Choice opponentsChoice, Outcome requiredOutcome) {

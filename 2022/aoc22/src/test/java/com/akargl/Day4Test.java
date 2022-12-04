@@ -7,6 +7,7 @@ import java.util.List;
 import com.akargl.utils.InputUtils;
 import org.junit.jupiter.api.Test;
 
+import static com.akargl.Day4.getAllSectionBoundaries;
 import static org.junit.jupiter.api.Assertions.*;
 
 class Day4Test {
@@ -18,7 +19,13 @@ class Day4Test {
 
   @Test
   void getNumCompletelyOverlappingSections() throws IOException {
-    List<String> inputLines = InputUtils.getInputLines(Path.of("inputs/d4_sample.txt"), false);
-    assertEquals(2, Day4.getNumCompletelyOverlappingSections(inputLines));
+    List<List<Integer>> sectionBoundaries = getAllSectionBoundaries(InputUtils.getInputLines(Path.of("inputs/d4_sample.txt"), false));
+    assertEquals(2, Day4.getNumCompletelyOverlappingSections(sectionBoundaries));
+  }
+
+  @Test
+  void getNumOverlappingSections() throws IOException {
+    List<List<Integer>> sectionBoundaries = getAllSectionBoundaries(InputUtils.getInputLines(Path.of("inputs/d4_sample.txt"), false));
+    assertEquals(4, Day4.getNumOverlappingSections(sectionBoundaries));
   }
 }

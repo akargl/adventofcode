@@ -1,9 +1,13 @@
 package com.akargl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -22,68 +26,69 @@ public class Day5 {
   }
 
   public static void main(String[] args) throws IOException {
-    String topCrates = getTopCrates(InputUtils.getInput("inputs/d5_1.txt"));
-    System.out.println("Part 1: " + topCrates);
+    String input = InputUtils.getInput("inputs/d5_1.txt");
+    String topCratesP1 = getTopCrates(input, Day5::processCommandP1);
+    System.out.println("Part 1: " + topCratesP1);
+
+    String topCratesP2 = getTopCrates(input, Day5::processCommandP2);
+    System.out.println("Part 1: " + topCratesP2);
   }
 
-  protected static String getTopCrates(String input) {
+  protected static String getTopCrates(String input, BiConsumer<Map<Integer, List<String>>, Command> processCommand) {
     String[] inputParts = input.split("\\r?\\n\\r?\\n");
 
-    List<List<String>> stacks = parseInitialStacks(inputParts[0]);
+    Map<Integer, List<String>> stacks = parseInitialStacks(inputParts[0]);
     List<Command> commands = parseMoves(inputParts[1]);
 
     for (Command command : commands) {
-      //processCommandP1(stacks, command);
-      processCommandP2(stacks, command);
+      processCommand.accept(stacks, command);
     }
-
-    String topCargos = stacks.stream().filter(l -> !l.isEmpty()).map(l -> l.get(0)).collect(Collectors.joining());
-
-    return topCargos;
+    return stacks.values().stream()
+        .filter(l -> !l.isEmpty())
+        .map(l -> l.get(0))
+        .collect(Collectors.joining());
   }
 
-  private static void processCommandP1(List<List<String>> stacks, Command command) {
+  private static void processCommandP1(Map<Integer, List<String>> stacks, Command command) {
     for (int i = 0; i < command.getAmount(); i++) {
       String cargo = stacks.get(command.getFrom()).remove(0);
       stacks.get(command.getTo()).add(0, cargo);
     }
   }
 
-  private static void processCommandP2(List<List<String>> stacks, Command command) {
+  private static void processCommandP2(Map<Integer, List<String>> stacks, Command command) {
     for (int i = 0; i < command.getAmount(); i++) {
       String cargo = stacks.get(command.getFrom()).remove(0);
       stacks.get(command.getTo()).add(i, cargo);
     }
   }
 
-  protected static List<List<String>> parseInitialStacks(String input) {
+  protected static Map<Integer, List<String>> parseInitialStacks(String input) {
     List<String> lines = Arrays.stream(input.split("\\r?\\n")).toList();
 
-    int numStacks = Arrays.stream(lines.get(lines.size() - 1)
-        .split("\\s+")).filter(l -> !l.isBlank())
-        .mapToInt(Integer::valueOf)
-        .max().getAsInt();
+    List<Integer> stackNumbers = Arrays.stream(lines.get(lines.size() - 1).split("\\s+"))
+        .filter(l -> !l.isBlank()).map(Integer::parseInt).toList();
+
+    Map<Integer, List<String>> stacks = new LinkedHashMap<>(); //use a LinkedHashMap to preserve the stack order
+    for (Integer stackNumber : stackNumbers) {
+      stacks.put(stackNumber, new LinkedList<>());
+    }
 
     lines = lines.stream()
-        .limit(lines.size() -1) //remove the stack numbers as we can assume it's always starting from 1 in consecutive order
+        .limit(lines.size() -1L) //remove the stack numbers as we can assume it's always starting from 1 in consecutive order
         .toList();
-
-    List<List<String>> stacks = new ArrayList<>();
-    for (int i = 0; i < numStacks; i++) {
-      stacks.add(new ArrayList<>());
-    }
 
     for (String line : lines) {
       final Pattern pattern = Pattern.compile(".(?<cargo>.).\\s?");
       final Matcher matcher = pattern.matcher(line);
 
-      int stackIndex = 0;
-      while (matcher.find()) {
+      Iterator<Integer> stackNumbersIt = stackNumbers.iterator();
+      while (matcher.find() && stackNumbersIt.hasNext()) {
         String cargo = matcher.group("cargo");
+        Integer stackNumber = stackNumbersIt.next();
         if (!cargo.isBlank()) {
-          stacks.get(stackIndex).add(cargo);
+          stacks.get(stackNumber).add(cargo);
         }
-        stackIndex++;
       }
     }
 
@@ -91,10 +96,10 @@ public class Day5 {
   }
 
   protected static List<Command> parseMoves(String input) {
-    return Pattern.compile("move (?<amount>\\d+) from (?<from>\\d+) to (?<to>\\d+)", Pattern.MULTILINE)
+    return Pattern.compile("move (\\d+) from (\\d+) to (\\d+)", Pattern.MULTILINE)
         .matcher(input)
         .results()
-        .map(r -> new Command(Integer.parseInt(r.group(1)), Integer.parseInt(r.group(2)) -1, Integer.parseInt(r.group(3)) -1))
+        .map(r -> new Command(Integer.parseInt(r.group(1)), Integer.parseInt(r.group(2)), Integer.parseInt(r.group(3))))
         .toList();
   }
 }

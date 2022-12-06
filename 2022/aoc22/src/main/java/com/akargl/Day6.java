@@ -1,7 +1,6 @@
 package com.akargl;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,10 +17,10 @@ public class Day6 {
   }
 
   protected static int findMarkerPosition(String input, int numUniqueChars) {
-    List<Character> chars = input.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
+    input.chars().boxed().toList();
+    List<Integer> chars = input.chars().boxed().toList();
     for (int i = numUniqueChars-1; i < chars.size(); i++) {
-      List<Character> markerRange = chars.subList(i - (numUniqueChars - 1), i+1);
-      Set<Character> currentSet = new HashSet<>(markerRange);
+      Set<Integer> currentSet = new HashSet<>(chars.subList(i - (numUniqueChars - 1), i+1));
 
       if (currentSet.size() == numUniqueChars) {
         return i+1;

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import com.akargl.utils.InputUtils;
 
 public class Day6 {
@@ -17,7 +16,6 @@ public class Day6 {
   }
 
   protected static int findMarkerPosition(String input, int numUniqueChars) {
-    input.chars().boxed().toList();
     List<Integer> chars = input.chars().boxed().toList();
     for (int i = numUniqueChars-1; i < chars.size(); i++) {
       Set<Integer> currentSet = new HashSet<>(chars.subList(i - (numUniqueChars - 1), i+1));

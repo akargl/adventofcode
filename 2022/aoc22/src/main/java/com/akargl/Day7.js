@@ -24,19 +24,19 @@ $ ls
 
 let lines = input.split("\n").filter(l => l !== "");
 
-let tree = {
-    name: "/",
-    files: [],
-    dirs: []
-};
+let folderMap = new Map();
 
 let currentDirPath = [];
 
 for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     if (line.startsWith("$ cd")) {
-        currentDirPath.push(line.replace("$ cd ", ""))
-        ;
+        let folder = line.replace("$ cd ", "");
+        if (folder === "..") {
+            currentDirPath.pop();
+        } else {
+            currentDirPath.push(folder);
+        }
     } else if (line.startsWith("$ ls")) {
         let files = [];
         let dirs = [];
@@ -44,9 +44,7 @@ for (let i = 0; i < lines.length; i++) {
             if (lines[i].startsWith("dir")) {
                 let dirName = lines[i].replace("dir ", "");
                 dirs.push({
-                    name: dirName,
-                    files: [],
-                    dirs: []
+                    name: dirName
                 });
             } else {
                 const {size, fileName} = lines[i].split(" ");
@@ -54,5 +52,9 @@ for (let i = 0; i < lines.length; i++) {
             }
         }
 
+        folderMap.set(currentDirPath.join("/"), {
+            files: files,
+            dirs: dirs
+        });
     }
 }

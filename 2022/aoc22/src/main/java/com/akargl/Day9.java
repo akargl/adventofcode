@@ -21,8 +21,9 @@ public class Day9 {
     private int x = 0;
     private int y = 0;
 
-    public Coordinate clone() {
-      return new Coordinate(x, y);
+    public Coordinate(Coordinate orig) {
+      x = orig.getX();
+      y = orig.getY();
     }
   }
 
@@ -87,13 +88,13 @@ public class Day9 {
     RopeParts ropeParts = new RopeParts(numKnots);
 
     Set<Coordinate> visitedPlaces = new HashSet<>();
-    visitedPlaces.add(ropeParts.getKnots().get(numKnots-1).clone());
+    visitedPlaces.add(new Coordinate(ropeParts.getKnots().get(numKnots-1)));
 
     for (String line : lines) {
       String[] commandParts = line.split(" ");
       for (int i = 0; i < Integer.parseInt(commandParts[1]); i++) {
         ropeParts.move(commandParts[0]);
-        visitedPlaces.add(ropeParts.getKnots().get(numKnots-1).clone());
+        visitedPlaces.add(new Coordinate(ropeParts.getKnots().get(numKnots-1)));
       }
     }
 

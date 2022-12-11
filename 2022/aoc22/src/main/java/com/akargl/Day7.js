@@ -1,60 +1,84 @@
-const input = `$ cd /
-$ ls
-dir a
-14848514 b.txt
-8504156 c.dat
-dir d
-$ cd a
-$ ls
-dir e
-29116 f
-2557 g
-62596 h.lst
-$ cd e
-$ ls
-584 i
-$ cd ..
-$ cd ..
-$ cd d
-$ ls
-4060174 j
-8033020 d.log
-5626152 d.ext
-7214296 k`;
+const fs = require("fs");
 
-let lines = input.split("\n").filter(l => l !== "");
+const input = fs.readFileSync("../../../../../inputs/d7_sample.txt").toString();
 
-let folderMap = new Map();
+let lines = input
+    .replaceAll("\r", "")
+    .split("\n")
+    .filter(l => l.trim() !== "");
 
-let currentDirPath = [];
+let filesystemStructure = getFilesystemStructure(lines);
 
-for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.startsWith("$ cd")) {
-        let folder = line.replace("$ cd ", "");
-        if (folder === "..") {
-            currentDirPath.pop();
-        } else {
-            currentDirPath.push(folder);
-        }
-    } else if (line.startsWith("$ ls")) {
-        let files = [];
-        let dirs = [];
-        while (!lines[i++].startsWith("$ ")) {
-            if (lines[i].startsWith("dir")) {
-                let dirName = lines[i].replace("dir ", "");
-                dirs.push({
-                    name: dirName
-                });
-            } else {
-                const {size, fileName} = lines[i].split(" ");
-                files.push({name: fileName, size: size});
-            }
-        }
+filesystemStructure.forEach((v, k) => {
+    let folderSize = getFolderSize(k, filesystemStructure);
+    console.log(`${k} ${folderSize}`);
+});
 
-        folderMap.set(currentDirPath.join("/"), {
-            files: files,
-            dirs: dirs
-        });
+let foldersUnderThresholdSize = Array.from(filesystemStructure.values())
+    .filter(x => x.size <= 100000).map(x => parseInt(x.size))
+    .reduce((p, c) => p+c, 0);
+console.log("Part 1: " + foldersUnderThresholdSize);
+
+let outermostSize = filesystemStructure.get("/").size;
+let freeSpace = 70000000 - outermostSize;
+let sizeToFreeUp = 30000000 - freeSpace;
+
+let sortedDirs = Array.from(filesystemStructure.entries())
+    .filter(x => x[1].size >= sizeToFreeUp)
+    .sort((a, b) => a[1].size - b[1].size);
+
+console.log(sortedDirs[0][1].size);
+
+////
+
+function getFolderSize(dirName, fileMap) {
+    let f = fileMap.get(dirName);
+    if (f.size == null) {
+        let filesSize = f.files.map(x => parseInt(x.size)).reduce((p, c) => p+c, 0);
+        let dirsSize = f.dirs.map(d => getFolderSize(`${dirName}/${d.name}`, fileMap)).reduce((p, c) => p+c, 0);
+
+        f.size = filesSize + dirsSize;
     }
+
+    return f.size;
+}
+
+function getFilesystemStructure(lines) {
+    let currentDirPath = [];
+    let folderMap = new Map();
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.startsWith("$ cd")) {
+            let folder = line.replace("$ cd ", "");
+            if (folder === "..") {
+                currentDirPath.pop();
+            } else {
+                currentDirPath.push(folder);
+            }
+        } else if (line.startsWith("$ ls")) {
+            let files = [];
+            let dirs = [];
+            while (i < lines.length - 1 && !lines[++i].startsWith("$ ")) {
+                if (lines[i].startsWith("dir")) {
+                    let dirName = lines[i].replace("dir ", "");
+                    dirs.push({
+                        name: dirName
+                    });
+                } else {
+                    const [size, fileName] = lines[i].split(" ");
+                    files.push({name: fileName, size: size});
+                }
+            }
+            i--;
+
+            folderMap.set(currentDirPath.join("/"), {
+                files: files,
+                dirs: dirs,
+                size: null
+            });
+        }
+    }
+
+    return folderMap;
 }

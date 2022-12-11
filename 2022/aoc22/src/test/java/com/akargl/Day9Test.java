@@ -1,6 +1,7 @@
 package com.akargl;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import com.akargl.utils.InputUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,33 +17,34 @@ class Day9Test {
 
   @Test
   void areTouching() {
-    assertEquals(true, new Day9.RopeParts(new Day9.Coordinate(1,1), new Day9.Coordinate(1, 1)).areTouching());
-    assertEquals(true, new Day9.RopeParts(new Day9.Coordinate(1,1), new Day9.Coordinate(1, 0)).areTouching());
-    assertEquals(true, new Day9.RopeParts(new Day9.Coordinate(1,1), new Day9.Coordinate(0, 1)).areTouching());
-    assertEquals(true, new Day9.RopeParts(new Day9.Coordinate(1,1), new Day9.Coordinate(0, 0)).areTouching());
+    assertTrue(Day9.RopeParts.areTouching(new Day9.Coordinate(1, 1), new Day9.Coordinate(1, 1)));
+    assertTrue(Day9.RopeParts.areTouching(new Day9.Coordinate(1, 1), new Day9.Coordinate(1, 0)));
+    assertTrue(Day9.RopeParts.areTouching(new Day9.Coordinate(1, 1), new Day9.Coordinate(0, 1)));
+    assertTrue(Day9.RopeParts.areTouching(new Day9.Coordinate(1, 1), new Day9.Coordinate(0, 0)));
 
-    assertEquals(false, new Day9.RopeParts(new Day9.Coordinate(1,2), new Day9.Coordinate(0, 0)).areTouching());
+    assertFalse(Day9.RopeParts.areTouching(new Day9.Coordinate(1, 2), new Day9.Coordinate(0, 0)));
   }
 
   @Test
   void moveTail() {
     assertEquals(new Day9.Coordinate(2, 1),
-        new Day9.RopeParts(new Day9.Coordinate(2, 2), new Day9.Coordinate(2, 0)).moveTail());
+        Day9.RopeParts.moveKnot(new Day9.Coordinate(2, 2), new Day9.Coordinate(2, 0)));
     assertEquals(new Day9.Coordinate(2, 3),
-        new Day9.RopeParts(new Day9.Coordinate(2, 2), new Day9.Coordinate(2, 4)).moveTail());
+        Day9.RopeParts.moveKnot(new Day9.Coordinate(2, 2), new Day9.Coordinate(2, 4)));
     assertEquals(new Day9.Coordinate(1, 2),
-        new Day9.RopeParts(new Day9.Coordinate(2, 2), new Day9.Coordinate(0, 2)).moveTail());
+        Day9.RopeParts.moveKnot(new Day9.Coordinate(2, 2), new Day9.Coordinate(0, 2)));
 
     //diagonal
     assertEquals(new Day9.Coordinate(1, 1),
-        new Day9.RopeParts(new Day9.Coordinate(2, 2), new Day9.Coordinate(0, 0)).moveTail());
+        Day9.RopeParts.moveKnot(new Day9.Coordinate(2, 2), new Day9.Coordinate(0, 0)));
     assertEquals(new Day9.Coordinate(3, 3),
-        new Day9.RopeParts(new Day9.Coordinate(2, 2), new Day9.Coordinate(4, 4)).moveTail());
+        Day9.RopeParts.moveKnot(new Day9.Coordinate(2, 2), new Day9.Coordinate(4, 4)));
   }
 
   @Test
   void moveRope() throws IOException {
     List<String> inputLines = InputUtils.getInputLines("inputs/d9_sample.txt");
-    Day9.moveRope(inputLines);
+    assertEquals(13, Day9.moveRope(inputLines, 2));
   }
+
 }

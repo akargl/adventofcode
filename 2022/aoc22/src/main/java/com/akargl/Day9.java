@@ -28,84 +28,75 @@ public class Day9 {
 
   @Data
   @AllArgsConstructor
-  @RequiredArgsConstructor
   protected static class RopeParts {
-    private Coordinate head = new Coordinate();
-    private Coordinate tail = new Coordinate();
+    private List<Coordinate> knots;
 
-    protected boolean areTouching() {
-      return Math.abs(head.getX() - tail.getX()) <= 1 && Math.abs(head.getY() - tail.y) <= 1;
+    public RopeParts(int numKnots) {
+      this.knots = new ArrayList<>();
+      for (int i = 0; i < numKnots; i++) {
+        knots.add(new Coordinate());
+      }
+    }
+
+    protected static boolean areTouching(Coordinate c1, Coordinate c2) {
+      return Math.abs(c1.getX() - c2.getX()) <= 1 && Math.abs(c1.getY() - c2.y) <= 1;
     }
 
     protected void move(String direction) {
       moveHead(direction);
 
-      if (!areTouching()) {
-        moveTail();
+      for (int i = 0; i < knots.size()-1; i++) {
+        if (!areTouching(knots.get(i), knots.get(i+1))) {
+          moveKnot(knots.get(i), knots.get(i+1));
+        }
       }
     }
 
     private Coordinate moveHead(String direction) {
       if ("U".equals(direction)) {
-        head.y++;
+        knots.get(0).y++;
       } else if ("R".equals(direction)) {
-        head.x++;
+        knots.get(0).x++;
       } else if ("D".equals(direction)) {
-        head.y--;
+        knots.get(0).y--;
       } else if ("L".equals(direction)) {
-        head.x--;
+        knots.get(0).x--;
       }
 
-      return head;
+      return knots.get(0);
     }
 
-    protected Coordinate moveTail() {
-      tail.y += Integer.signum(head.y - tail.y);
-      tail.x += Integer.signum(head.x - tail.x);
+    protected static Coordinate moveKnot(Coordinate leader, Coordinate follower) {
+      follower.y += Integer.signum(leader.y - follower.y);
+      follower.x += Integer.signum(leader.x - follower.x);
 
-      return tail;
+      return follower;
     }
   }
 
   public static void main(String[] args) throws IOException {
     List<String> inputLines = InputUtils.getInputLines("inputs/d9_1.txt");
-    int numVisitedPlaces = moveRope(inputLines);
+    int numVisitedPlaces = moveRope(inputLines, 2);
     System.out.println("Part 1: " + numVisitedPlaces);
+
+    int numVisitedPlacesP2 = moveRope(inputLines, 10);
+    System.out.println("Part 2: " + numVisitedPlacesP2);
   }
 
-  protected static int moveRope(List<String> lines) {
-    RopeParts ropeParts = new RopeParts();
+  protected static int moveRope(List<String> lines, int numKnots) {
+    RopeParts ropeParts = new RopeParts(numKnots);
 
     Set<Coordinate> visitedPlaces = new HashSet<>();
-    visitedPlaces.add(ropeParts.getTail().clone());
+    visitedPlaces.add(ropeParts.getKnots().get(numKnots-1).clone());
 
     for (String line : lines) {
       String[] commandParts = line.split(" ");
       for (int i = 0; i < Integer.parseInt(commandParts[1]); i++) {
         ropeParts.move(commandParts[0]);
-        visitedPlaces.add(ropeParts.getTail().clone());
+        visitedPlaces.add(ropeParts.getKnots().get(numKnots-1).clone());
       }
     }
 
-    //visualizeTailPositions(visitedPlaces);
-
     return visitedPlaces.size();
-  }
-
-  private static void visualizeTailPositions(Set<Coordinate> tailPositions) {
-    Integer maxX = Collections.max(tailPositions.stream().map(c -> c.getX()).toList());
-    Integer maxY = Collections.max(tailPositions.stream().map(c -> c.getY()).toList());
-
-    List<List<String>> grid = Collections.nCopies(maxY, Collections.nCopies(maxX, "."));
-
-    for (Coordinate tailPosition : tailPositions) {
-      grid.get(tailPosition.getY()).set(tailPosition.getX(), "#");
-    }
-
-    Collections.reverse(grid);
-
-    for (List<String> row : grid) {
-      System.out.println(String.join("", row));
-    }
   }
 }

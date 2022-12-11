@@ -5,16 +5,21 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import com.akargl.utils.InputUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class Day8Test {
+  Day8.Grid grid;
+
+  @BeforeEach
+  void setUp() throws IOException {
+    grid = new Day8.Grid(InputUtils.getInputLines("inputs/d8_sample.txt"));
+  }
 
   @Test
   void parseInput() throws IOException {
-    Day8.Grid grid = new Day8.Grid(InputUtils.getInputLines("inputs/d8_sample.txt"));
-
     assertEquals(5, grid.getWidth());
     assertEquals(5, grid.getHeight());
 
@@ -35,8 +40,6 @@ class Day8Test {
 
   @Test
   void isVisible() throws IOException {
-    Day8.Grid grid = new Day8.Grid(InputUtils.getInputLines("inputs/d8_sample.txt"));
-
     assertEquals(true, Day8.isVisible(grid, 0, 0));
     assertEquals(true, Day8.isVisible(grid, 2, 4));
     assertEquals(true, Day8.isVisible(grid, 1, 1));
@@ -45,19 +48,16 @@ class Day8Test {
 
   @Test
   void findNumberVisibleTrees() throws IOException {
-    Day8.Grid grid = new Day8.Grid(InputUtils.getInputLines("inputs/d8_sample.txt"));
     assertEquals(21, Day8.findNumberVisibleTrees(grid));
   }
 
   @Test
   void findHighestScenicViewScore() throws IOException {
-    Day8.Grid grid = new Day8.Grid(InputUtils.getInputLines("inputs/d8_sample.txt"));
     assertEquals(8, Day8.findHighestScenicViewScore(grid));
   }
 
   @Test
   void getScenicViewScore() throws IOException {
-    Day8.Grid grid = new Day8.Grid(InputUtils.getInputLines("inputs/d8_sample.txt"));
     assertEquals(8, Day8.getScenicViewScore(grid, 2, 3));
     assertEquals(4, Day8.getScenicViewScore(grid, 2, 1));
   }

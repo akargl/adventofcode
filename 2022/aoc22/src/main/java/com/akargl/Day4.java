@@ -9,7 +9,7 @@ import com.akargl.utils.InputUtils;
 
 public class Day4 {
   public static void main(String[] args) throws IOException {
-    List<List<Integer>> sectionBoundaries = getAllSectionBoundaries(InputUtils.getInputLines(Path.of("inputs/d4_1.txt"), false));
+    List<List<Integer>> sectionBoundaries = getAllSectionBoundaries(InputUtils.getInputLines("inputs/d4_1.txt"));
 
     long numCompletelyOverlappingSections = Day4.getNumCompletelyOverlappingSections(sectionBoundaries);
     System.out.println("Part 1: " + numCompletelyOverlappingSections);

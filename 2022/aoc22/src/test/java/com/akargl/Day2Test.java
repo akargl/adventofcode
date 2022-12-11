@@ -12,7 +12,7 @@ class Day2Test {
 
   @Test
   void getTotalOwnScore() throws IOException {
-    List<String> inputLines = InputUtils.getInputLines(Path.of("inputs/d2_sample.txt"), false);
+    List<String> inputLines = InputUtils.getInputLines("inputs/d2_sample.txt");
     assertEquals(15, Day2.getTotalOwnScore(inputLines, Day2.parseChoiceP1));
     assertEquals(12, Day2.getTotalOwnScore(inputLines, Day2.parseChoiceP2));
   }

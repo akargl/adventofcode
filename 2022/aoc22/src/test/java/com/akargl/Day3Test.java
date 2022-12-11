@@ -12,13 +12,13 @@ class Day3Test {
 
   @Test
   void getPrioritySum() throws IOException {
-    List<String> inputLines = InputUtils.getInputLines(Path.of("inputs/d3_sample.txt"), false);
+    List<String> inputLines = InputUtils.getInputLines("inputs/d3_sample.txt");
     assertEquals(157, Day3.getPrioritySum(inputLines));
   }
 
   @Test
   void getBadgePrioritySum() throws IOException {
-    List<String> inputLines = InputUtils.getInputLines(Path.of("inputs/d3_sample.txt"), false);
+    List<String> inputLines = InputUtils.getInputLines("inputs/d3_sample.txt");
     assertEquals(70, Day3.getBadgePrioritySum(inputLines));
   }
 }

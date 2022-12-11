@@ -57,7 +57,7 @@ public class Day2 {
   }
 
   public static void main(String[] args) throws IOException {
-    List<String> inputLines = InputUtils.getInputLines(Path.of("inputs/d2_1.txt"), false);
+    List<String> inputLines = InputUtils.getInputLines("inputs/d2_1.txt");
     int p1 = getTotalOwnScore(inputLines, parseChoiceP1);
     System.out.println("Part 1: " + p1);
 

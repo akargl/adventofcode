@@ -19,13 +19,13 @@ class Day4Test {
 
   @Test
   void getNumCompletelyOverlappingSections() throws IOException {
-    List<List<Integer>> sectionBoundaries = getAllSectionBoundaries(InputUtils.getInputLines(Path.of("inputs/d4_sample.txt"), false));
+    List<List<Integer>> sectionBoundaries = getAllSectionBoundaries(InputUtils.getInputLines("inputs/d4_sample.txt"));
     assertEquals(2, Day4.getNumCompletelyOverlappingSections(sectionBoundaries));
   }
 
   @Test
   void getNumOverlappingSections() throws IOException {
-    List<List<Integer>> sectionBoundaries = getAllSectionBoundaries(InputUtils.getInputLines(Path.of("inputs/d4_sample.txt"), false));
+    List<List<Integer>> sectionBoundaries = getAllSectionBoundaries(InputUtils.getInputLines("inputs/d4_sample.txt"));
     assertEquals(4, Day4.getNumOverlappingSections(sectionBoundaries));
   }
 }

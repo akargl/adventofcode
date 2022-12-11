@@ -10,7 +10,7 @@ import com.akargl.utils.InputUtils;
 
 public class Day3 {
   public static void main(String[] args) throws IOException {
-    List<String> inputLines = InputUtils.getInputLines(Path.of("inputs/d3_1.txt"), false);
+    List<String> inputLines = InputUtils.getInputLines("inputs/d3_1.txt");
     int prioritySum = getPrioritySum(inputLines);
     System.out.println("Part 1:" + prioritySum);
 

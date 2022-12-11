@@ -7,10 +7,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class InputUtils {
-  public static List<String> getInputLines(Path inputPath, boolean includeEmptyLines) throws IOException {
-    return Files.lines(inputPath)
+  public static List<String> getInputLines(String inputPath) throws IOException {
+    return getInputLines(inputPath, false);
+  }
+
+  public static List<String> getInputLines(String inputPath, boolean includeEmptyLines) throws IOException {
+    return Files.lines(Path.of(inputPath))
         .filter(l -> includeEmptyLines || !l.trim().equals(""))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public static String getInput(String path) throws IOException {

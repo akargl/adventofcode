@@ -1,21 +1,21 @@
 package com.akargl;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
+import com.akargl.utils.Grid;
 import com.akargl.utils.InputUtils;
+import com.akargl.utils.IntegerGrid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class Day8Test {
-  Day8.Grid grid;
+  IntegerGrid grid;
 
   @BeforeEach
   void setUp() throws IOException {
-    grid = new Day8.Grid(InputUtils.getInputLines("inputs/d8_sample.txt"));
+    grid = new IntegerGrid(InputUtils.getInputLines("inputs/d8_sample.txt"));
   }
 
   @Test

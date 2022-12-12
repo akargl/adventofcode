@@ -2,30 +2,17 @@ package com.akargl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.akargl.utils.Coordinate;
 import com.akargl.utils.InputUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 public class Day9 {
-  @Data
-  @AllArgsConstructor
-  @RequiredArgsConstructor
-  protected static class Coordinate {
-    private int x = 0;
-    private int y = 0;
-
-    public Coordinate(Coordinate orig) {
-      x = orig.getX();
-      y = orig.getY();
-    }
-  }
 
   @Data
   @AllArgsConstructor

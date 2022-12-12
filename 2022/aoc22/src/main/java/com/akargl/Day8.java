@@ -2,75 +2,18 @@ package com.akargl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.akargl.utils.Grid;
 import com.akargl.utils.InputUtils;
-
-import lombok.Data;
+import com.akargl.utils.IntegerGrid;
 
 public class Day8 {
-  @Data
-  protected static class Grid {
-    private List<List<Integer>> grid;
-
-    protected Grid(List<String> lines) {
-      grid = lines.stream()
-          .map(l -> Arrays.stream(l.split(""))
-              .map(Integer::parseInt)
-              .toList())
-          .toList();
-    }
-
-    protected int getWidth() {
-      return grid.get(0).size();
-    }
-
-    protected int getHeight() {
-      return grid.size();
-    }
-
-    protected List<Integer> getRow(int rowNumber) {
-      return grid.get(rowNumber);
-    }
-
-    protected List<Integer> getColumn(int columnNumber) {
-      return grid.stream().map(row -> row.get(columnNumber)).toList();
-    }
-
-    protected List<Integer> getSubRow(int rowNumber, int from, int to) {
-      return getRow(rowNumber).subList(from, to);
-    }
-
-    protected List<Integer> getSubColumn(int columnNumber, int from, int to) {
-      return getColumn(columnNumber).subList(from, to);
-    }
-
-    protected Integer getElement(int x, int y) {
-      return grid.get(y).get(x);
-    }
-
-    protected List<Integer> getTopColumn(int x, int y) {
-      return getSubColumn(x, 0, y);
-    }
-
-    protected List<Integer> getBottomColumn(int x, int y) {
-      return getSubColumn(x, y+1, getHeight());
-    }
-
-    protected List<Integer> getLeftRow(int x, int y) {
-      return getSubRow(y, 0, x);
-    }
-
-    protected List<Integer> getRightRow(int x, int y) {
-      return getSubRow(y, x+1, getWidth());
-    }
-  }
 
   public static void main(String[] args) throws IOException {
-    Grid grid = new Grid(InputUtils.getInputLines("inputs/d8_1.txt"));
+    IntegerGrid grid = new IntegerGrid(InputUtils.getInputLines("inputs/d8_1.txt"));
     int numberVisibleTrees = findNumberVisibleTrees(grid);
 
     System.out.println("Part 1: " + numberVisibleTrees);
@@ -79,7 +22,7 @@ public class Day8 {
     System.out.println("Part 2: " + highestScenicViewScore);
   }
 
-  protected static int findNumberVisibleTrees(Grid grid) {
+  protected static int findNumberVisibleTrees(IntegerGrid grid) {
     int numVisible = 0;
 
     for (int x = 0; x < grid.getWidth(); x++) {
@@ -93,7 +36,7 @@ public class Day8 {
     return numVisible;
   }
 
-  protected static boolean isVisible(Grid grid, int x, int y) {
+  protected static boolean isVisible(IntegerGrid grid, int x, int y) {
     //border elements are always visible
     if (x == 0 || x == grid.getWidth() -1 || y == 0 || y == grid.getHeight() -1) {
       return true;
@@ -104,7 +47,7 @@ public class Day8 {
        .anyMatch(max -> max < grid.getElement(x, y));
   }
 
-  protected static Long findHighestScenicViewScore(Grid grid) {
+  protected static Long findHighestScenicViewScore(IntegerGrid grid) {
     Long maxScenicViewScore = 0L;
 
     for (int x = 0; x < grid.getWidth(); x++) {
@@ -116,7 +59,7 @@ public class Day8 {
     return maxScenicViewScore;
   }
 
-  protected static Long getScenicViewScore(Grid grid, int x, int y) {
+  protected static Long getScenicViewScore(IntegerGrid grid, int x, int y) {
     List<Integer> topColumn = new ArrayList<>(grid.getTopColumn(x, y));
     Collections.reverse(topColumn);
     List<Integer> leftRow = new ArrayList<>(grid.getLeftRow(x, y));

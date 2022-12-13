@@ -1,11 +1,13 @@
 package com.akargl.utils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -40,16 +42,44 @@ public class Grid<T> {
     return grid.get(y).get(x);
   }
 
-  public Coordinate findFirstElement(T element) {
+  public T getElement(Coordinate coordinate) {
+    return getElement(coordinate.x, coordinate.y);
+  }
+
+  public Coordinate findFirstCoordinates(T element) {
+    List<Coordinate> coordinates = getCoordinatesWhere(t -> t == element);
+
+    if (coordinates.isEmpty()) {
+      return null;
+    }
+    return coordinates.get(0);
+  }
+
+  public List<Coordinate> getCoordinatesWhere(Predicate<T> filter) {
+    List<Coordinate> results = new ArrayList<>();
+
     for (int x = 0; x < getWidth(); x++) {
       for (int y = 0; y < getHeight(); y++) {
-        if (getElement(x, y) == element) {
-          return new Coordinate(x, y);
+        if (filter.test(getElement(x, y))) {
+          results.add(new Coordinate(x, y));
         }
       }
     }
 
-    return null;
+    return results;
+  }
+
+  public List<T> getElementsWhere(Predicate<T> filter) {
+    return getCoordinatesWhere(filter).stream().map(this::getElement).toList();
+  }
+
+  public void forEach(BiConsumer<T, Coordinate> f) {
+    for (int x = 0; x < getWidth(); x++) {
+      for (int y = 0; y < getHeight(); y++) {
+        Coordinate coordinate = new Coordinate(x, y);
+        f.accept(getElement(coordinate), coordinate);
+      }
+    }
   }
 
   public List<T> getTopColumn(int x, int y) {

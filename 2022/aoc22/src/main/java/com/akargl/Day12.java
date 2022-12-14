@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import com.akargl.utils.Coordinate;
 import com.akargl.utils.Grid;
@@ -64,6 +65,9 @@ public class Day12 {
 
     List<GridNode> shortestPath = findShortestPath(start, grid);
 
+    System.out.println();
+    System.out.println(grid.gridToString(n -> shortestPath.contains(n) ? "[" + n.getValue() + "]" : " " + n.getValue() + " "));
+
     return -1;
   }
 
@@ -79,6 +83,8 @@ public class Day12 {
     GridNode node = start;
     parentMap.put(start, null);
     while (!queue.isEmpty()) {
+      System.out.println(grid.gridToString(n -> n.isVisited() ? "[" + n.getValue() + "]" : " " + n.getValue() + " "));
+      System.out.println();
       node = queue.remove();
 
       if ("E".equals(node.getValue())) {
@@ -121,4 +127,6 @@ public class Day12 {
         .filter(Objects::nonNull)
         .toList();
   }
+
+
 }

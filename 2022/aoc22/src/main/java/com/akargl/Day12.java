@@ -97,7 +97,13 @@ public class Day12 {
 
     while (node != null) {
       path.add(0, node);
-      node = parentMap.get(node);
+      for (Map.Entry<GridNode, GridNode> entry : parentMap.entrySet()) {
+        if (entry.getKey().equals(node)) {
+           node = entry.getValue();
+           break;
+        }
+      }
+      //node = parentMap.get(node);
     }
 
     return path;

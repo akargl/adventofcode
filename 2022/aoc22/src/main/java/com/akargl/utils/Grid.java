@@ -39,6 +39,10 @@ public class Grid<T> {
   }
 
   public T getElement(int x, int y) {
+    if (x < 0 || y < 0 || x >= getWidth() || y >= getHeight()) {
+      return null;
+    }
+
     return grid.get(y).get(x);
   }
 
@@ -47,7 +51,7 @@ public class Grid<T> {
   }
 
   public Coordinate findFirstCoordinates(T element) {
-    List<Coordinate> coordinates = getCoordinatesWhere(t -> t == element);
+    List<Coordinate> coordinates = getCoordinatesWhere(t -> t.equals(element));
 
     if (coordinates.isEmpty()) {
       return null;

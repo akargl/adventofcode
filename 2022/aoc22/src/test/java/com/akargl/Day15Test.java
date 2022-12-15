@@ -15,13 +15,6 @@ class Day15Test {
   }
 
   @Test
-  void getCoveredArea() {
-    Day15.Sensor sensor = new Day15.Sensor(new Coordinate(0, 0), Day15.getManhattanDistance(new Coordinate(0, 0), new Coordinate(2, 0)));
-    Set<Coordinate> coveredArea = sensor.getCoveredArea();
-    assertEquals(13, coveredArea.size());
-  }
-
-  @Test
   void isPointInRange() {
     Day15.Sensor sensor = new Day15.Sensor(new Coordinate(0, 0), 2);
     assertTrue(sensor.isPointInRange(2, 0));
@@ -32,8 +25,10 @@ class Day15Test {
 
   @Test
   void getPerimeterPoints() {
-    Day15.Sensor sensor = new Day15.Sensor(new Coordinate(0, 0), 2);
-    Set<Coordinate> perimeterPoints = sensor.getPerimeterPoints();
-    assertEquals(1, perimeterPoints.size());
+    Set<Coordinate> perimeterPoints = new Day15.Sensor(new Coordinate(0, 0), 2).getPerimeterPoints();
+    assertEquals(12, perimeterPoints.size());
+
+    perimeterPoints = new Day15.Sensor(new Coordinate(2, 18), 7).getPerimeterPoints();
+    assertEquals(32, perimeterPoints.size());
   }
 }

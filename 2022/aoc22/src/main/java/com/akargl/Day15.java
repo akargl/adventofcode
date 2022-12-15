@@ -2,6 +2,7 @@ package com.akargl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,18 +44,6 @@ public class Day15 {
       return y - range;
     }
 
-    public Set<Coordinate> getCoveredArea() {
-      Set<Coordinate> coveredArea = new HashSet<>();
-
-      for (int x = -range; x <= range; x++) {
-        for (int y = -range + Math.abs(x); y <= (range - Math.abs(x)); y++) {
-          coveredArea.add(new Coordinate(this.x + x, this.y + y));
-        }
-      }
-
-      return coveredArea;
-    }
-
     public boolean isPointInRange(int pX, int pY) {
       return Math.abs(pX -x) + Math.abs(pY - y) <= range;
     }
@@ -62,9 +51,10 @@ public class Day15 {
     public Set<Coordinate> getPerimeterPoints() {
       Set<Coordinate> perimeter = new HashSet<>();
 
-      for (int x = -range -1; x <= range +1; x++) {
-        perimeter.add(new Coordinate(x, getY() + (-range -1 -x)));
-        perimeter.add(new Coordinate(x, getY() - (-range -1 -x)));
+      for (int xOffset = -range -1; xOffset <= range +1; xOffset++) {
+        int yOffset = (-range -1 + Math.abs(xOffset));
+        perimeter.add(new Coordinate(getX() +xOffset, getY() + yOffset));
+        perimeter.add(new Coordinate(getX()+ xOffset, getY() - yOffset));
       }
 
       return perimeter;
@@ -74,12 +64,16 @@ public class Day15 {
   public static void main(String[] args) throws IOException {
     String input = InputUtils.getInput("inputs/d15_1.txt");
 
-    long start = System.currentTimeMillis();
+
     int part1 = getNumCoveredCellsInLine(input, 2000000);
+    System.out.println("Part 1: " + part1);
+
+    long start = System.currentTimeMillis();
+    long part2 = getUncoveredPoint(input, 4000000);
     long finish = System.currentTimeMillis();
     long timeElapsed = finish - start;
     System.out.println(timeElapsed);
-    System.out.println("Part 1: " + part1);
+    System.out.println("Part 2: " + part2);
   }
 
   public static int getNumCoveredCellsInLine(String input, int line) {
@@ -102,12 +96,18 @@ public class Day15 {
         .filter(b -> b.getY() == line && b.getX() >= minX && b.getX() <= maxX).collect(Collectors.toSet());
 
     return numCoveredPoints - beaconsInLineXValues.size();
+  }
 
-    /*Map<Integer, Set<Integer>> linesToCoveredCells = getAllCoveredCells(sensorRanges);
+  public static long getUncoveredPoint(String input, int maxXY) {
+    Map<Coordinate, Coordinate> sensorsToBeacons = parseInput(input);
+    List<Sensor> sensorRanges = getSensorRanges(sensorsToBeacons);
 
-    List<Integer> beaconsInLineXValues = sensorsToBeacons.values().stream().filter(b -> b.getY() == line).map(Coordinate::getX).toList();
-    linesToCoveredCells.get(line).removeAll(beaconsInLineXValues);
-    return linesToCoveredCells.get(line).size();*/
+    Coordinate uncoveredPoint = sensorRanges.stream().map(Sensor::getPerimeterPoints).flatMap(Collection::stream)
+        .filter(p -> p.getX() <= maxXY && p.getX() >= 0 && p.getY() <= maxXY && p.getY() >= 0)
+        .filter(p -> sensorRanges.stream().noneMatch(s -> s.isPointInRange(p.getX(), p.getY())))
+        .findAny().orElse(null);
+
+    return uncoveredPoint.getX() * 4000000L + uncoveredPoint.getY();
   }
 
   public static Map<Coordinate, Coordinate> parseInput(String input) {
@@ -129,24 +129,6 @@ public class Day15 {
   public static List<Sensor> getSensorRanges(Map<Coordinate, Coordinate> sensorToBeacons) {
     return sensorToBeacons.entrySet().stream().map(e -> new Sensor(e.getKey(), getManhattanDistance(e.getKey(), e.getValue()))).collect(Collectors.toList());
   }
-
-  /*public static Map<Integer, Set<Integer>> getAllCoveredCells(List<Sensor> sensors) {
-    Map<Integer, Set<Integer>> linesToCoveredCells = new HashMap<>();
-    for (Sensor sensor : sensors) {
-      Set<Coordinate> coveredArea = sensor.getCoveredArea();
-      for (Coordinate cell : coveredArea) {
-        if (linesToCoveredCells.containsKey(cell.getY())) {
-          linesToCoveredCells.get(cell.getY()).add(cell.getX());
-        } else {
-          Set<Integer> xVals = new HashSet<>();
-          xVals.add(cell.getX());
-          linesToCoveredCells.put(cell.getY(), xVals);
-        }
-      }
-    }
-
-    return linesToCoveredCells;
-  }*/
 
   public static int getManhattanDistance(Coordinate c1, Coordinate c2) {
     return Math.abs(c1.getX() - c2.getX()) + Math.abs(c1.getY() - c2.getY());

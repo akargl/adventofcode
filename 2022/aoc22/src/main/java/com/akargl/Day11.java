@@ -1,7 +1,9 @@
 package com.akargl;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -15,28 +17,28 @@ public class Day11 {
   @Data
   @AllArgsConstructor
   public static class Monkey {
-    private List<Integer> items;
+    private List<Long> items;
 
     private int testDivisibleBy;
     private int throwToIfTrue;
     private int throwToIfFalse;
 
-    private UnaryOperator<Integer> operation;
+    private UnaryOperator<Long> operation;
 
-    private int itemsHandled;
+    private long itemsHandled;
 
     public static Monkey fromInput(String input) {
       String[] lines = input.split("\\r?\\n");
-      List<Integer> startingItems = Arrays.stream(lines[1].replaceAll("\s+Starting items:\s+", "")
+      List<Long> startingItems = Arrays.stream(lines[1].replaceAll("\s+Starting items:\s+", "")
           .split(", "))
-          .map(Integer::parseInt).collect(Collectors.toList());
+          .map(Long::parseLong).collect(Collectors.toList());
       String[] operationComponents = lines[2].replaceAll("\s+Operation: new =\s+", "").split("\s+");
       int testDivisibleBy = Integer.parseInt(lines[3].replaceAll("\s+Test: divisible by ", ""));
       int throwToIfTrue = Integer.parseInt(lines[4].replaceAll("\s+If true: throw to monkey ", ""));
       int throwToIfFalse = Integer.parseInt(lines[5].replaceAll("\s+If false: throw to monkey ", ""));
 
-      UnaryOperator<Integer> operation = old -> {
-        int rightPart = operationComponents[2].equals("old") ? old : Integer.parseInt(operationComponents[2]);
+      UnaryOperator<Long> operation = old -> {
+        Long rightPart = operationComponents[2].equals("old") ? old : Integer.parseInt(operationComponents[2]);
         if (operationComponents[1].equals("+")) {
           return old + rightPart;
         } else if (operationComponents[1].equals("*")) {
@@ -51,24 +53,33 @@ public class Day11 {
   }
 
   public static void main(String[] args) throws IOException {
-    String input = InputUtils.getInput("inputs/d11_sample.txt");
-    int part1 = part1(input);
+    String input = InputUtils.getInput("inputs/d11_1.txt");
+
+    List<Monkey> monkeysP1 = simulateNRounds(input, 20, true);
+    long part1 = multiplyTopMonkeysItemsHandled(monkeysP1, 2);
     System.out.println("Part 1: " + part1);
+
+    List<Monkey> monkeysP2 = simulateNRounds(input, 10000, false);
+    long part2 = multiplyTopMonkeysItemsHandled(monkeysP2, 2);
+    System.out.println("Part 2: " + part2);
   }
 
-  public static int part1(String input) {
+  public static List<Monkey> simulateNRounds(String input, int rounds, boolean divideWorryLevels) {
     List<Monkey> monkeys = parseInput(input);
 
-    List<Integer> itemsHandled = Collections.nCopies(monkeys.size(), 0);
-
-    for (int i = 0; i < 20; i++) {
-      for (Monkey monkey : monkeys) {
-        monkey.setItemsHandled(monkey.getItemsHandled() + monkey.getItems().size());
-      }
-      simulateRound(monkeys);
+    for (int i = 0; i < rounds; i++) {
+      simulateRound(monkeys, divideWorryLevels);
     }
 
-    return -1;
+    return monkeys;
+  }
+
+  public static long multiplyTopMonkeysItemsHandled(List<Monkey> monkeys, int numTopMonkeys) {
+    return monkeys.stream()
+        .map(Monkey::getItemsHandled)
+        .sorted(Collections.reverseOrder())
+        .limit(numTopMonkeys)
+        .reduce(1L, (p, c) -> p * c);
   }
 
   public static List<Monkey> parseInput(String input) {
@@ -76,11 +87,17 @@ public class Day11 {
     return Arrays.stream(inputSections).map(Monkey::fromInput).toList();
   }
 
-  public static void simulateRound(List<Monkey> monkeys) {
+  public static void simulateRound(List<Monkey> monkeys, boolean divideWorryLevels) {
+    int commonMultiple = getCommonMultiple(monkeys.stream().map(m -> m.getTestDivisibleBy()).toList());
     for (Monkey monkey : monkeys) {
-      for (Integer item : monkey.getItems()) {
+      monkey.setItemsHandled(monkey.getItemsHandled() + monkey.getItems().size());
+      for (Long item : monkey.getItems()) {
         item = monkey.operation.apply(item);
-        item /= 3;
+        if (divideWorryLevels) {
+          item /= 3;
+        } else {
+          item %= commonMultiple;
+        }
         if (item % monkey.getTestDivisibleBy() == 0) {
           monkeys.get(monkey.getThrowToIfTrue()).getItems().add(item);
         } else {
@@ -90,5 +107,9 @@ public class Day11 {
 
       monkey.getItems().clear();
     }
+  }
+
+  public static int getCommonMultiple(List<Integer> testDivisors) {
+    return testDivisors.stream().reduce(1, (p, c) -> p * c);
   }
 }

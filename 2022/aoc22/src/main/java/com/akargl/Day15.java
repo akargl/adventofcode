@@ -65,11 +65,7 @@ public class Day15 {
     int part1 = getNumCoveredCellsInLine(input, 2000000);
     System.out.println("Part 1: " + part1);
 
-    long start = System.currentTimeMillis();
     long part2 = getUncoveredPoint(input, 4000000);
-    long finish = System.currentTimeMillis();
-    long timeElapsed = finish - start;
-    System.out.println(timeElapsed);
     System.out.println("Part 2: " + part2);
   }
 

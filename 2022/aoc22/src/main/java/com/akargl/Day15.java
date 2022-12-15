@@ -1,7 +1,6 @@
 package com.akargl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,11 +10,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import com.akargl.utils.Coordinate;
 import com.akargl.utils.InputUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 public class Day15 {

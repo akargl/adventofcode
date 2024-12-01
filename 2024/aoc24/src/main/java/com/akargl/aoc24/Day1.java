@@ -9,7 +9,6 @@ import com.akargl.aoc24.utils.InputUtils;
 public class Day1 {
   public static void main(String[] args) throws IOException {
     List<List<Integer>> lists = parseInputLists(InputUtils.getInputLines("inputs/d1_1.txt"));
-    assert lists.size() == 2;
 
     List<Integer> left = lists.get(0);
     List<Integer> right = lists.get(1);

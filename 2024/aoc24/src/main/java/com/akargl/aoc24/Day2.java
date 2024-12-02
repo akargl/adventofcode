@@ -5,7 +5,6 @@ import com.akargl.aoc24.utils.InputUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -47,21 +46,23 @@ public class Day2 {
     }
 
     protected static boolean isSafeReport(List<Integer> report) {
+        int direction = Integer.signum(report.get(0) - report.get(1));
+
         for (int i = 0; i < report.size() -1; i++) {
-            // numbers must be different
-            if (report.get(i).equals(report.get(i + 1))) {
+            int diff = report.get(i) - report.get(i + 1);
+
+            //values must not be the same and not differ by more than 3
+            if (diff == 0 || Math.abs(diff) > 3) {
                 return false;
             }
-            //neighbors must not differ more than three
-            if (Math.abs(report.get(i) - report.get(i + 1)) > 3) {
+
+            //values have to be continuously increasing or decreasing
+            if (Integer.signum(diff) != direction) {
                 return false;
             }
         }
 
-        boolean sortedAscending = report.stream().sorted().toList().equals(report);
-        boolean sortedDescending = report.stream().sorted(Comparator.reverseOrder()).toList().equals(report);
-
-        return sortedAscending || sortedDescending;
+        return true;
     }
 
     protected static List<List<Integer>> parseInput(List<String> inputLines) {

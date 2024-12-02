@@ -5,9 +5,9 @@ import com.akargl.aoc24.utils.InputUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
 public class Day2 {
     public static void main(String[] args) throws IOException {
@@ -15,30 +15,18 @@ public class Day2 {
 
         List<List<Integer>> reports = parseInput(inputLines);
 
-        long safeReportCount = p1GetSafeReportCount(reports);
+        long safeReportCount = getSafeReportCount(reports, Day2::isSafeReport);
         System.out.println(safeReportCount);
 
-        long safeReportCountp2 = p2GetSafeReportCount(reports);
-        System.out.println(safeReportCountp2);
+        long safeReportCountP2 = getSafeReportCount(reports, Day2::isSafeReportP2);
+        System.out.println(safeReportCountP2);
     }
 
-    protected static long p1GetSafeReportCount(List<List<Integer>> reports) {
+    protected static long getSafeReportCount(List<List<Integer>> reports, Function<List<Integer>, Boolean> safeReportFunction) {
         return reports.stream()
-                .map(Day2::isSafeReport)
+                .map(safeReportFunction)
                 .filter(x -> x)
                 .count();
-    }
-
-    protected static long p2GetSafeReportCount(List<List<Integer>> reports) {
-        long safeReportCount = 0;
-
-        for (List<Integer> report : reports) {
-            if (isSafeReportP2(report)) {
-                safeReportCount++;
-            }
-        }
-
-        return safeReportCount;
     }
 
     protected static boolean isSafeReportP2(List<Integer> report) {

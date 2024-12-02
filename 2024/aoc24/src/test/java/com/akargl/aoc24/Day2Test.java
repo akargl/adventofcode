@@ -24,12 +24,6 @@ class Day2Test {
     }
 
     @Test
-    void p1GetSafeReportCount() {
-        long safeReportCount = Day2.p1GetSafeReportCount(reports);
-        assertEquals(2, safeReportCount);
-    }
-
-    @Test
     void isSafeReport() {
         assertTrue(Day2.isSafeReport(List.of(7, 6, 4, 2, 1)));
         assertFalse(Day2.isSafeReport(List.of(1, 2, 7, 8, 9)));
@@ -50,9 +44,9 @@ class Day2Test {
     }
 
     @Test
-    void p2GetSafeReportCount() {
-        long safeReportCount = Day2.p2GetSafeReportCount(reports);
-        assertEquals(4, safeReportCount);
+    void getSafeReportCount() {
+        assertEquals(2, Day2.getSafeReportCount(reports, Day2::isSafeReport));
+        assertEquals(4, Day2.getSafeReportCount(reports, Day2::isSafeReportP2));
     }
 
 

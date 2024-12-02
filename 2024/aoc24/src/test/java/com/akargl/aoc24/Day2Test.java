@@ -2,7 +2,6 @@ package com.akargl.aoc24;
 
 import com.akargl.aoc24.utils.InputUtils;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ class Day2Test {
     }
 
     @Test
-    void parseInput() throws IOException {
+    void parseInput() {
         assertEquals(6, reports.size());
         assertEquals(5, reports.getFirst().size());
     }

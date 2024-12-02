@@ -4,7 +4,6 @@ import com.akargl.aoc24.utils.InputUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,4 +38,22 @@ class Day2Test {
         assertFalse(Day2.isSafeReport(List.of(8, 6, 4, 4, 1)));
         assertTrue(Day2.isSafeReport(List.of(1, 3, 6, 7, 9)));
     }
+
+    @Test
+    void isSafeReportP2() {
+        assertTrue(Day2.isSafeReportP2(List.of(7, 6, 4, 2, 1)));
+        assertFalse(Day2.isSafeReportP2(List.of(1, 2, 7, 8, 9)));
+        assertFalse(Day2.isSafeReportP2(List.of(9, 7, 6, 2, 1)));
+        assertTrue(Day2.isSafeReportP2(List.of(1, 3, 2, 4, 5)));
+        assertTrue(Day2.isSafeReportP2(List.of(8, 6, 4, 4, 1)));
+        assertTrue(Day2.isSafeReportP2(List.of(1, 3, 6, 7, 9)));
+    }
+
+    @Test
+    void p2GetSafeReportCount() {
+        long safeReportCount = Day2.p2GetSafeReportCount(reports);
+        assertEquals(4, safeReportCount);
+    }
+
+
 }

@@ -27,4 +27,10 @@ class Day3Test {
         int p1CalcResult = Day3.p1CalcResult(multiplications);
         assertEquals(161, p1CalcResult);
     }
+
+    @Test
+    void p2CalcResult() {
+        int p2CalcResult = Day3.p2CalcResult("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))");
+        assertEquals(48, p2CalcResult);
+    }
 }

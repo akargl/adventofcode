@@ -1,0 +1,38 @@
+package com.akargl.aoc24;
+
+import com.akargl.aoc24.utils.InputUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Day3 {
+    public static void main(String[] args) throws IOException {
+        String input = InputUtils.getInput("inputs/d3_1.txt");
+
+        List<List<Integer>> mulPairs = parseInputToMultiplications(input);
+        int p1Result = p1CalcResult(mulPairs);
+        System.out.println("Part 1: " + p1Result);
+    }
+
+    protected static int p1CalcResult(List<List<Integer>> mulPairs) {
+        return mulPairs.stream()
+                .map(p -> p.get(0) * p.get(1))
+                .reduce(0, Integer::sum);
+    }
+
+    protected static List<List<Integer>> parseInputToMultiplications(String input) {
+        List<List<Integer>> result = new ArrayList<>();
+
+        final String regex = "mul\\((\\d+),(\\d+)\\)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+        while (matcher.find()) {
+            result.add(List.of(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2))));
+        }
+
+        return result;
+    }
+}

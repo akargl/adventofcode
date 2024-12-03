@@ -3,10 +3,8 @@ package com.akargl.aoc24;
 import com.akargl.aoc24.utils.InputUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Day3 {

@@ -5,10 +5,15 @@ import com.akargl.aoc24.utils.InputUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Day3 {
+
+    public static final Pattern SECTIONS_PATTERN = Pattern.compile("(?>do\\(\\)|^).*?(mul\\(\\d+,\\d+\\))*.*?(?>don't\\(\\)|$)");
+    public static final Pattern MUL_PATTERN = Pattern.compile("mul\\((\\d+),(\\d+)\\)");
+
     public static void main(String[] args) throws IOException {
         String input = InputUtils.getInput("inputs/d3_1.txt");
 
@@ -36,29 +41,18 @@ public class Day3 {
     }
 
     protected static List<List<Integer>> parseInputToMultiplications(String input) {
-        List<List<Integer>> result = new ArrayList<>();
-
-        final String regex = "mul\\((\\d+),(\\d+)\\)";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(input);
-        while (matcher.find()) {
-            result.add(List.of(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2))));
-        }
-
-        return result;
+        return MUL_PATTERN
+                .matcher(input)
+                .results()
+                .map(r -> List.of(Integer.parseInt(r.group(1)), Integer.parseInt(r.group(2))))
+                .toList();
     }
 
     protected static List<String> parseInputToConditionalSections(String input) {
-        List<String> result = new ArrayList<>();
-
-        final String regex = "(?>do\\(\\)|^).*?(mul\\(\\d+,\\d+\\))*.*?(?>don't\\(\\)|$)";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(input);
-
-        while (matcher.find()) {
-            result.add(matcher.group(0));
-        }
-
-        return result;
+        return SECTIONS_PATTERN
+                .matcher(input)
+                .results()
+                .map(MatchResult::group)
+                .toList();
     }
 }

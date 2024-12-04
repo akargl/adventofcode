@@ -86,22 +86,6 @@ public class Grid<T> {
     }
   }
 
-  public List<T> getDiagonal(int startX, int startY, boolean up) {
-    List<T> result = new ArrayList<>();
-
-    int x = startX;
-    int y = startY;
-
-    while (x < getWidth() && y < getHeight() && y > 0) {
-      result.add(getElement(x, y));
-
-      x++;
-      y += up ? -1 : 1;
-    }
-
-    return result;
-  }
-
   public List<T> getTopColumn(int x, int y) {
     return getSubColumn(x, 0, y);
   }

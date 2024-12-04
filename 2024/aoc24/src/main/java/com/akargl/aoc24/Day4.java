@@ -23,26 +23,26 @@ public class Day4 {
     protected static int findXmas(StringGrid grid) {
         int count = 0;
 
-        // just hardcoded since there are only four target variations
+        // just hardcoded since there are only four target variations and there's no time left
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
                 if (grid.getElement(x, y).equals("A")) {
-                    if ("M".equals(grid.getElement(x - 1, y - 1)) &&
-                        "S".equals(grid.getElement(x + 1, y - 1)) &&
-                        "M".equals(grid.getElement(x - 1, y + 1)) &&
-                        "S".equals(grid.getElement(x + 1, y + 1)) ||
-                        "S".equals(grid.getElement(x - 1, y - 1)) &&
-                        "S".equals(grid.getElement(x + 1, y - 1)) &&
-                        "M".equals(grid.getElement(x - 1, y + 1)) &&
-                        "M".equals(grid.getElement(x + 1, y + 1)) ||
-                        "M".equals(grid.getElement(x - 1, y - 1)) &&
-                        "M".equals(grid.getElement(x + 1, y - 1)) &&
-                        "S".equals(grid.getElement(x - 1, y + 1)) &&
-                        "S".equals(grid.getElement(x + 1, y + 1)) ||
-                        "S".equals(grid.getElement(x - 1, y - 1)) &&
-                        "M".equals(grid.getElement(x + 1, y - 1)) &&
-                        "S".equals(grid.getElement(x - 1, y + 1)) &&
-                        "M".equals(grid.getElement(x + 1, y + 1))) {
+                    if (("M".equals(grid.getElement(x - 1, y - 1)) &&
+                            "S".equals(grid.getElement(x + 1, y - 1)) &&
+                            "M".equals(grid.getElement(x - 1, y + 1)) &&
+                            "S".equals(grid.getElement(x + 1, y + 1))) ||
+                        ("S".equals(grid.getElement(x - 1, y - 1)) &&
+                            "S".equals(grid.getElement(x + 1, y - 1)) &&
+                            "M".equals(grid.getElement(x - 1, y + 1)) &&
+                            "M".equals(grid.getElement(x + 1, y + 1))) ||
+                        ("M".equals(grid.getElement(x - 1, y - 1)) &&
+                            "M".equals(grid.getElement(x + 1, y - 1)) &&
+                            "S".equals(grid.getElement(x - 1, y + 1)) &&
+                            "S".equals(grid.getElement(x + 1, y + 1))) ||
+                        ("S".equals(grid.getElement(x - 1, y - 1)) &&
+                            "M".equals(grid.getElement(x + 1, y - 1)) &&
+                            "S".equals(grid.getElement(x - 1, y + 1)) &&
+                            "M".equals(grid.getElement(x + 1, y + 1)))) {
                         count++;
                     }
                 }
@@ -57,23 +57,21 @@ public class Day4 {
 
         int count = 0;
 
+        List<Coordinate> directions = List.of(new Coordinate(1, 0), new Coordinate(1, 1), new Coordinate(0, 1), new Coordinate(-1, 1),
+                new Coordinate(-1, 0), new Coordinate(-1, -1), new Coordinate(0, -1), new Coordinate(1, -1));
+
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
-                count += findInDirection(grid, new Coordinate(x, y), new ArrayList<>(searchList), 1, 0) ? 1 : 0;
-                count += findInDirection(grid, new Coordinate(x, y), new ArrayList<>(searchList), 1, 1) ? 1 : 0;
-                count += findInDirection(grid, new Coordinate(x, y), new ArrayList<>(searchList), 0, 1) ? 1 : 0;
-                count += findInDirection(grid, new Coordinate(x, y), new ArrayList<>(searchList), -1, 1) ? 1 : 0;
-                count += findInDirection(grid, new Coordinate(x, y), new ArrayList<>(searchList), -1, 0) ? 1 : 0;
-                count += findInDirection(grid, new Coordinate(x, y), new ArrayList<>(searchList), -1, -1) ? 1 : 0;
-                count += findInDirection(grid, new Coordinate(x, y), new ArrayList<>(searchList), 0, -1) ? 1 : 0;
-                count += findInDirection(grid, new Coordinate(x, y), new ArrayList<>(searchList), 1, -1) ? 1 : 0;
+                for (Coordinate direction : directions) {
+                    count += findInDirection(grid, new Coordinate(x, y), new ArrayList<>(searchList), direction) ? 1 : 0;
+                }
             }
         }
 
         return count;
     }
 
-    protected static boolean findInDirection(StringGrid grid, Coordinate c, List<String> search, int searchVectorX, int searchVectorY) {
+    protected static boolean findInDirection(StringGrid grid, Coordinate c, List<String> search, Coordinate searchDirection) {
         if (search.isEmpty()) {
             return true;
         }
@@ -82,7 +80,7 @@ public class Day4 {
             return false;
         }
 
-        return findInDirection(grid, new Coordinate(c.x + searchVectorX, c.y + searchVectorY), search, searchVectorX, searchVectorY);
+        return findInDirection(grid, new Coordinate(c.x + searchDirection.getX(), c.y + searchDirection.getY()), search, searchDirection);
     }
 
     protected static StringGrid inputToGrid(String inputPath) throws IOException {

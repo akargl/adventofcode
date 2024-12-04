@@ -30,10 +30,10 @@ class Day4Test {
 
     @Test
     void findInDirection() {
-        assertTrue(Day4.findInDirection(grid, new Coordinate(5, 0), new ArrayList<>(List.of("X", "M", "A", "S")), 1, 0));
-        assertTrue(Day4.findInDirection(grid, new Coordinate(5, 9), new ArrayList<>(List.of("X", "M", "A", "S")), 1, -1));
+        assertTrue(Day4.findInDirection(grid, new Coordinate(5, 0), new ArrayList<>(List.of("X", "M", "A", "S")), new Coordinate(1, 0)));
+        assertTrue(Day4.findInDirection(grid, new Coordinate(5, 9), new ArrayList<>(List.of("X", "M", "A", "S")), new Coordinate(1, -1)));
 
-        assertFalse(Day4.findInDirection(grid, new Coordinate(1, 9), new ArrayList<>(List.of("X", "M", "A", "S")), 1, 1));
+        assertFalse(Day4.findInDirection(grid, new Coordinate(1, 9), new ArrayList<>(List.of("X", "M", "A", "S")), new Coordinate(1, 1)));
     }
 
     @Test

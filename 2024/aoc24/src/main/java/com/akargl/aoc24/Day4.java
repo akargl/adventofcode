@@ -15,11 +15,41 @@ public class Day4 {
 
         int count = findInGrid(grid, "XMAS");
         System.out.println(count);
+
+        int xmasCount = findXmas(grid);
+        System.out.println(xmasCount);
     }
 
-    protected static StringGrid inputToGrid(String inputPath) throws IOException {
-        List<String> inputLines = InputUtils.getInputLines(inputPath);
-        return new StringGrid(inputLines);
+    protected static int findXmas(StringGrid grid) {
+        int count = 0;
+
+        // just hardcoded since there are only four target variations
+        for (int x = 0; x < grid.getWidth(); x++) {
+            for (int y = 0; y < grid.getHeight(); y++) {
+                if (grid.getElement(x, y).equals("A")) {
+                    if ("M".equals(grid.getElement(x - 1, y - 1)) &&
+                        "S".equals(grid.getElement(x + 1, y - 1)) &&
+                        "M".equals(grid.getElement(x - 1, y + 1)) &&
+                        "S".equals(grid.getElement(x + 1, y + 1)) ||
+                        "S".equals(grid.getElement(x - 1, y - 1)) &&
+                        "S".equals(grid.getElement(x + 1, y - 1)) &&
+                        "M".equals(grid.getElement(x - 1, y + 1)) &&
+                        "M".equals(grid.getElement(x + 1, y + 1)) ||
+                        "M".equals(grid.getElement(x - 1, y - 1)) &&
+                        "M".equals(grid.getElement(x + 1, y - 1)) &&
+                        "S".equals(grid.getElement(x - 1, y + 1)) &&
+                        "S".equals(grid.getElement(x + 1, y + 1)) ||
+                        "S".equals(grid.getElement(x - 1, y - 1)) &&
+                        "M".equals(grid.getElement(x + 1, y - 1)) &&
+                        "S".equals(grid.getElement(x - 1, y + 1)) &&
+                        "M".equals(grid.getElement(x + 1, y + 1))) {
+                        count++;
+                    }
+                }
+            }
+        }
+
+        return count;
     }
 
     protected static int findInGrid(StringGrid grid, String word) {
@@ -53,5 +83,10 @@ public class Day4 {
         }
 
         return findInDirection(grid, new Coordinate(c.x + searchVectorX, c.y + searchVectorY), search, searchVectorX, searchVectorY);
+    }
+
+    protected static StringGrid inputToGrid(String inputPath) throws IOException {
+        List<String> inputLines = InputUtils.getInputLines(inputPath);
+        return new StringGrid(inputLines);
     }
 }

@@ -35,4 +35,14 @@ class Day4Test {
 
         assertFalse(Day4.findInDirection(grid, new Coordinate(1, 9), new ArrayList<>(List.of("X", "M", "A", "S")), 1, 1));
     }
+
+    @Test
+    void findXmas() {
+        assertEquals(9, Day4.findXmas(grid));
+    }
+
+    @Test
+    void findInGrid() {
+        assertEquals(18, Day4.findInGrid(grid, "XMAS"));
+    }
 }

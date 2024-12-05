@@ -15,30 +15,63 @@ public class Day5 {
 
         int sumMiddleNumbers = part1(pageOrderingRules, updatePageNumbers);
         System.out.println(sumMiddleNumbers);
+
+        int part2 = part2(pageOrderingRules, updatePageNumbers);
+        System.out.println(part2);
     }
 
     protected static int part1(List<List<Integer>> pageOrderingRules, List<List<Integer>> updatePageNumbers) {
-        List<List<Integer>> updatesForPrint = findUpdatesForPrint(pageOrderingRules, updatePageNumbers);
+        List<List<Integer>> updatesForPrint = updatePageNumbers.stream()
+                .filter(pageNumbers -> isPrintable(pageNumbers, pageOrderingRules))
+                .toList();
         return sumMiddleNumbers(updatesForPrint);
     }
 
-    protected static List<List<Integer>> findUpdatesForPrint(List<List<Integer>> pageOrderingRules, List<List<Integer>> updatePageNumbers) {
-        return updatePageNumbers.stream()
-                .filter(pageNumbers -> {
-                    // for each number check all previous numbers for violation with the current number
-                    for (int i = 0; i < pageNumbers.size(); i++) {
-                        int currentPage = pageNumbers.get(i);
-                        for (int j = 0; j < i; j++) {
-                            Integer previousPage = pageNumbers.get(j);
-                            boolean pageOrderViolation = checkPageOrder(currentPage, previousPage, pageOrderingRules);
-                            if (pageOrderViolation) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                })
+    protected static int part2(List<List<Integer>> pageOrderingRules, List<List<Integer>> updatePageNumbers) {
+        List<List<Integer>> updatedPageNumbers = updatePageNumbers.stream()
+                .filter(pageNumbers -> !isPrintable(pageNumbers, pageOrderingRules))
+                .map(p -> correctPageNumbers(pageOrderingRules, p))
                 .toList();
+        return sumMiddleNumbers(updatedPageNumbers);
+    }
+
+    protected static List<Integer> correctPageNumbers(List<List<Integer>> pageOrderingRules, List<Integer> pageNumbers) {
+        pageNumbers = new ArrayList<>(pageNumbers);
+        for (int i = 0; i < pageNumbers.size(); i++) {
+            int currentPage = pageNumbers.get(i);
+            //check all following pages for violation with current page
+            for (int j = i+1; j < pageNumbers.size(); j++) {
+                int nextPage = pageNumbers.get(j);
+                boolean pageorderViolation = checkPageOrder(nextPage, currentPage, pageOrderingRules);
+                if (pageorderViolation) {
+                    pageNumbers.set(i, nextPage);
+                    pageNumbers.set(j, currentPage);
+                    currentPage = nextPage;
+                }
+            }
+        }
+        return pageNumbers;
+    }
+
+    protected static List<List<Integer>> findPagesets(List<List<Integer>> pageOrderingRules, List<List<Integer>> updatePageNumbers) {
+        return updatePageNumbers.stream()
+                .filter(pageNumbers -> isPrintable(pageNumbers, pageOrderingRules))
+                .toList();
+    }
+
+    private static boolean isPrintable(List<Integer> pageNumbers, List<List<Integer>> pageOrderingRules) {
+        // for each number check all previous numbers for violation with the current number
+        for (int i = 0; i < pageNumbers.size(); i++) {
+            int currentPage = pageNumbers.get(i);
+            for (int j = 0; j < i; j++) {
+                Integer previousPage = pageNumbers.get(j);
+                boolean pageOrderViolation = checkPageOrder(currentPage, previousPage, pageOrderingRules);
+                if (pageOrderViolation) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     protected static int sumMiddleNumbers(List<List<Integer>> updatePages) {

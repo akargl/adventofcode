@@ -46,4 +46,18 @@ class Day5Test {
     void part1() {
         assertEquals(143, Day5.part1(pageOrderingRules, updatePageNumbers));
     }
+
+    @Test
+    void correctPageNumbers() {
+        assertEquals(List.of(75,47,61,53,29), Day5.correctPageNumbers(pageOrderingRules, List.of(75,47,61,53,29)));
+
+        assertEquals(List.of(97,75,47,61,53), Day5.correctPageNumbers(pageOrderingRules, List.of(75,97,47,61,53)));
+        assertEquals(List.of(61, 29, 13), Day5.correctPageNumbers(pageOrderingRules, List.of(61,13,29)));
+        assertEquals(List.of(97, 75, 47, 29, 13), Day5.correctPageNumbers(pageOrderingRules, List.of(97, 13, 75, 29, 47)));
+    }
+
+    @Test
+    void part2() {
+        assertEquals(123, Day5.part2(pageOrderingRules, updatePageNumbers));
+    }
 }

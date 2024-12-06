@@ -93,7 +93,6 @@ public class Day6 {
                         .collect(Collectors.toSet())
                         .size();
             } else if (nextGridElement.equals(OBSTACLE)) {
-                //turn right
                 guardPosition.turnRight();
             } else {
                 guardPosition.setCoordinate(nextCoords);
@@ -106,7 +105,7 @@ public class Day6 {
     }
 
     protected enum Direction {
-        UP, DOWN, LEFT, RIGHT;
+        UP, DOWN, LEFT, RIGHT
     }
 
     protected static Direction parseDirection(String direction) {

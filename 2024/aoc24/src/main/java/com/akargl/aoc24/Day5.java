@@ -53,12 +53,6 @@ public class Day5 {
         return pageNumbers;
     }
 
-    protected static List<List<Integer>> findPagesets(List<List<Integer>> pageOrderingRules, List<List<Integer>> updatePageNumbers) {
-        return updatePageNumbers.stream()
-                .filter(pageNumbers -> isPrintable(pageNumbers, pageOrderingRules))
-                .toList();
-    }
-
     private static boolean isPrintable(List<Integer> pageNumbers, List<List<Integer>> pageOrderingRules) {
         // for each number check all previous numbers for violation with the current number
         for (int i = 0; i < pageNumbers.size(); i++) {

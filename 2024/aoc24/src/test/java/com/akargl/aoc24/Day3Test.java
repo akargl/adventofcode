@@ -18,10 +18,6 @@ class Day3Test {
     }
 
     @Test
-    void parseInputToMultiplications() {
-    }
-
-    @Test
     void p1CalcResult() {
         List<List<Integer>> multiplications = Day3.parseInputToMultiplications(input);
         int p1CalcResult = Day3.p1CalcResult(multiplications);

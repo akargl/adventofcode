@@ -22,7 +22,7 @@ class Day4Test {
     }
 
     @Test
-    void inputToGrid() throws IOException {
+    void inputToGrid() {
         assertEquals(10, grid.getWidth());
         assertEquals(10, grid.getHeight());
     }

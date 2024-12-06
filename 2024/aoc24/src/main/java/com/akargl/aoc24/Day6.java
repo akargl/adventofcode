@@ -22,19 +22,23 @@ public class Day6 {
         List<String> inputLines = InputUtils.getInputLines("inputs/d6_1.txt");
         StringGrid grid = new StringGrid(inputLines);
 
-        List<Coordinate> guardCoordinates = grid.getCoordinatesWhere(GUARD_MARKERS::contains);
-
-        assert guardCoordinates.size() == 1;
-
-        Coordinate guardCoords = guardCoordinates.getFirst();
-        GuardPosition guardStartPosition = new GuardPosition(guardCoordinates.getFirst(), parseDirection(grid.getElement(guardCoords)));
+        GuardPosition guardStartPosition = getGuardStartPosition(grid);
 
         part1(guardStartPosition, grid);
 
         part2(guardStartPosition, grid, inputLines);
     }
 
-    private static void part1(GuardPosition guardStartPosition, StringGrid grid) {
+    protected static GuardPosition getGuardStartPosition(StringGrid grid) {
+        List<Coordinate> guardCoordinates = grid.getCoordinatesWhere(GUARD_MARKERS::contains);
+
+        assert guardCoordinates.size() == 1;
+
+        Coordinate guardCoords = guardCoordinates.getFirst();
+        return new GuardPosition(guardCoordinates.getFirst(), parseDirection(grid.getElement(guardCoords)));
+    }
+
+    protected static Integer part1(GuardPosition guardStartPosition, StringGrid grid) {
         long start = System.nanoTime();
         Integer numVisitedPositions = simulateGuardMovement(guardStartPosition, grid);
         long finish = System.nanoTime();
@@ -42,9 +46,11 @@ public class Day6 {
         System.out.println("Part 1 runtime: " + timeElapsed + "ns");
 
         System.out.println("Part 1 num visited positions: " + numVisitedPositions);
+
+        return numVisitedPositions;
     }
 
-    private static int part2(GuardPosition guardStartPosition, StringGrid ogGrid, List<String> inputLines) {
+    protected static int part2(GuardPosition guardStartPosition, StringGrid ogGrid, List<String> inputLines) {
         long start = System.nanoTime();
 
         Set<Coordinate> obstaclePositionsForLoop = new HashSet<>();

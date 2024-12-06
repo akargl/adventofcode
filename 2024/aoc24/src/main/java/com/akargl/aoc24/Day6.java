@@ -3,11 +3,14 @@ package com.akargl.aoc24;
 import com.akargl.aoc24.utils.Coordinate;
 import com.akargl.aoc24.utils.InputUtils;
 import com.akargl.aoc24.utils.StringGrid;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Day6 {
 
@@ -15,38 +18,46 @@ public class Day6 {
     public static final String OBSTACLE = "#";
 
     public static void main(String[] args) throws IOException {
-        List<String> inputLines = InputUtils.getInputLines("inputs/d6_1.txt");
+        List<String> inputLines = InputUtils.getInputLines("inputs/d6_sample.txt");
         StringGrid grid = new StringGrid(inputLines);
 
         List<Coordinate> guardCoordinates = grid.getCoordinatesWhere(GUARD_MARKERS::contains);
 
         assert guardCoordinates.size() == 1;
 
-        Coordinate guardPosition = guardCoordinates.getFirst();
-        Direction guardDirection = getDirection(grid.getElement(guardPosition));
+        Coordinate guardCoords = guardCoordinates.getFirst();
+        GuardPosition guardPosition = new GuardPosition(guardCoordinates.getFirst(), parseDirection(grid.getElement(guardCoords)));
 
-        int numVisitedPositions = simulateGuardMovement(guardPosition, guardDirection, grid);
+        long start = System.nanoTime();
+        int numVisitedPositions = simulateGuardMovement(guardPosition, grid);
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+        System.out.println(timeElapsed);
 
         System.out.println(numVisitedPositions);
     }
 
-    private static int simulateGuardMovement(Coordinate guardPosition, Direction guardDirection, StringGrid grid) {
-        Set<Coordinate> visitedPositions = new HashSet<>();
+    private static int simulateGuardMovement(GuardPosition guardPosition, StringGrid grid) {
+        Set<GuardPosition> visitedPositions = new HashSet<>();
+
+        visitedPositions.add(guardPosition);
 
         while (true) {
-            visitedPositions.add(guardPosition);
-
-            Coordinate nextPosition = getNextPosition(guardPosition, guardDirection);
-            String nextGridElement = grid.getElement(nextPosition);
+            Coordinate nextCoords = guardPosition.getNextCoords();
+            String nextGridElement = grid.getElement(nextCoords);
 
             if (nextGridElement == null) {
                 //reached map boundary
-                return visitedPositions.size();
+                return visitedPositions.stream()
+                        .map(GuardPosition::getCoordinate)
+                        .collect(Collectors.toSet())
+                        .size();
             } else if (nextGridElement.equals(OBSTACLE)) {
                 //turn right
-                guardDirection = turnRight(guardDirection);
+                guardPosition.turnRight();
             } else {
-                guardPosition = nextPosition;
+                guardPosition.setCoordinate(nextCoords);
+                visitedPositions.add(new GuardPosition(guardPosition.getCoordinate(), guardPosition.getDirection()));
             }
         }
     }
@@ -55,7 +66,7 @@ public class Day6 {
         UP, DOWN, LEFT, RIGHT;
     }
 
-    protected static Direction getDirection(String direction) {
+    protected static Direction parseDirection(String direction) {
         return switch (direction) {
             case "^" -> Direction.UP;
             case "v" -> Direction.DOWN;
@@ -65,21 +76,28 @@ public class Day6 {
         };
     }
 
-    protected static Coordinate getNextPosition(Coordinate currentPosition, Direction direction) {
-        return switch (direction) {
-            case UP -> currentPosition.getTop();
-            case DOWN -> currentPosition.getBottom();
-            case LEFT -> currentPosition.getLeft();
-            case RIGHT -> currentPosition.getRight();
-        };
-    }
+    @Data
+    @AllArgsConstructor
+    protected static class GuardPosition {
+        Coordinate coordinate;
+        Direction direction;
 
-    protected static Direction turnRight(Direction direction) {
-        return switch (direction) {
-            case UP -> Direction.RIGHT;
-            case RIGHT -> Direction.DOWN;
-            case DOWN -> Direction.LEFT;
-            case LEFT -> Direction.UP;
-        };
+        void turnRight() {
+            direction = switch (direction) {
+                case UP -> Direction.RIGHT;
+                case RIGHT -> Direction.DOWN;
+                case DOWN -> Direction.LEFT;
+                case LEFT -> Direction.UP;
+            };
+        }
+
+        Coordinate getNextCoords() {
+            return switch (direction) {
+                case UP -> coordinate.getTop();
+                case DOWN -> coordinate.getBottom();
+                case LEFT -> coordinate.getLeft();
+                case RIGHT -> coordinate.getRight();
+            };
+        }
     }
 }

@@ -50,6 +50,18 @@ public class Grid<T> {
     return getElement(coordinate.x, coordinate.y);
   }
 
+  public void setElement(int x, int y, T element) {
+    if (x < 0 || y < 0 || x >= getWidth() || y >= getHeight()) {
+      return;
+    }
+
+    grid.get(y).set(x, element);
+  }
+
+  public void setElement(Coordinate coordinate, T element) {
+    setElement(coordinate.x, coordinate.y, element);
+  }
+
   public Coordinate findFirstCoordinates(T element) {
     List<Coordinate> coordinates = getCoordinatesWhere(t -> t.equals(element));
 

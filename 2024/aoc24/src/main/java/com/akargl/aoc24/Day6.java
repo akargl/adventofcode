@@ -16,9 +16,10 @@ public class Day6 {
 
     public static final List<String> GUARD_MARKERS = List.of("^", "v", "<", ">");
     public static final String OBSTACLE = "#";
+    public static final String FREE_FIELD = ".";
 
     public static void main(String[] args) throws IOException {
-        List<String> inputLines = InputUtils.getInputLines("inputs/d6_sample.txt");
+        List<String> inputLines = InputUtils.getInputLines("inputs/d6_1.txt");
         StringGrid grid = new StringGrid(inputLines);
 
         List<Coordinate> guardCoordinates = grid.getCoordinatesWhere(GUARD_MARKERS::contains);
@@ -26,18 +27,57 @@ public class Day6 {
         assert guardCoordinates.size() == 1;
 
         Coordinate guardCoords = guardCoordinates.getFirst();
-        GuardPosition guardPosition = new GuardPosition(guardCoordinates.getFirst(), parseDirection(grid.getElement(guardCoords)));
+        GuardPosition guardStartPosition = new GuardPosition(guardCoordinates.getFirst(), parseDirection(grid.getElement(guardCoords)));
 
-        long start = System.nanoTime();
-        int numVisitedPositions = simulateGuardMovement(guardPosition, grid);
-        long finish = System.nanoTime();
-        long timeElapsed = finish - start;
-        System.out.println(timeElapsed);
+        part1(guardStartPosition, grid);
 
-        System.out.println(numVisitedPositions);
+        part2(guardStartPosition, grid, inputLines);
     }
 
-    private static int simulateGuardMovement(GuardPosition guardPosition, StringGrid grid) {
+    private static void part1(GuardPosition guardStartPosition, StringGrid grid) {
+        long start = System.nanoTime();
+        Integer numVisitedPositions = simulateGuardMovement(guardStartPosition, grid);
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+        System.out.println("Part 1 runtime: " + timeElapsed + "ns");
+
+        System.out.println("Part 1 num visited positions: " + numVisitedPositions);
+    }
+
+    private static int part2(GuardPosition guardStartPosition, StringGrid ogGrid, List<String> inputLines) {
+        long start = System.nanoTime();
+
+        Set<Coordinate> obstaclePositionsForLoop = new HashSet<>();
+
+        for (int x = 0; x < ogGrid.getWidth(); x++) {
+            for (int y = 0; y < ogGrid.getHeight(); y++) {
+                //System.out.println("Trying obstacle on " + x + ", " + y);
+                if (ogGrid.getElement(x, y).equals(FREE_FIELD)) {
+                    StringGrid tempGrid = new StringGrid(inputLines);
+                    tempGrid.setElement(x, y, OBSTACLE);
+
+                    boolean loopDetected = simulateGuardMovement(guardStartPosition, tempGrid) == null;
+                    if (loopDetected) {
+                        obstaclePositionsForLoop.add(new Coordinate(x, y));
+                    }
+                }
+            }
+        }
+
+        long finish = System.nanoTime();
+        long timeElapsed = finish - start;
+        System.out.println("Part 2 runtime: " + timeElapsed/1000000 + "ms");
+
+        int numObstaclePositions = obstaclePositionsForLoop.size();
+
+        System.out.println("Part 2 num obstacle positions: " + numObstaclePositions);
+
+        return numObstaclePositions;
+    }
+
+    private static Integer simulateGuardMovement(GuardPosition guardStartPosition, StringGrid grid) {
+        GuardPosition guardPosition = new GuardPosition(guardStartPosition);
+
         Set<GuardPosition> visitedPositions = new HashSet<>();
 
         visitedPositions.add(guardPosition);
@@ -57,7 +97,10 @@ public class Day6 {
                 guardPosition.turnRight();
             } else {
                 guardPosition.setCoordinate(nextCoords);
-                visitedPositions.add(new GuardPosition(guardPosition.getCoordinate(), guardPosition.getDirection()));
+                if (!visitedPositions.add(new GuardPosition(guardPosition))) {
+                    //already visited -> loop detected
+                    return null;
+                }
             }
         }
     }
@@ -98,6 +141,11 @@ public class Day6 {
                 case LEFT -> coordinate.getLeft();
                 case RIGHT -> coordinate.getRight();
             };
+        }
+
+        public GuardPosition(GuardPosition og) {
+            coordinate = og.getCoordinate();
+            direction = og.getDirection();
         }
     }
 }

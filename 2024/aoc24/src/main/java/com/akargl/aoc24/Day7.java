@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.ToLongBiFunction;
 import java.util.stream.Collectors;
 import com.akargl.aoc24.utils.InputUtils;
 
@@ -11,27 +12,39 @@ public class Day7 {
   public static void main(String[] args) throws IOException {
     List<String> inputLines = InputUtils.getInputLines("inputs/d7_1.txt");
 
-    List<Long> possibleCalcs = new ArrayList<>();
+    List<ToLongBiFunction<Long, Long>> operations = new ArrayList<>();
+    operations.add(Long::sum);
+    operations.add((x, y) -> x * y);
 
+    long sumPossibleCalcsP1 = getAmountPossibleCalcs(inputLines, operations);
+    System.out.println("Part1: " + sumPossibleCalcsP1);
+
+    operations.add((a, b) -> Long.parseLong(a.toString().concat(b.toString())));
+
+    long sumPossibleCalcsP2 = getAmountPossibleCalcs(inputLines, operations);
+    System.out.println("Part2: " + sumPossibleCalcsP2);
+  }
+
+  private static long getAmountPossibleCalcs(List<String> inputLines, List<ToLongBiFunction<Long, Long>> operations) {
+    long possibleCalcsSum = 0;
     for (String inputLine : inputLines) {
       String[] parts = inputLine.split(":");
       long expectedResult = Long.parseLong(parts[0]);
       List<Long> numbers = Arrays.stream(parts[1].trim().split(" "))
           .map(Long::parseLong).collect(Collectors.toList());
 
-      boolean isPossible = calcIsPossible(expectedResult, numbers);
+      boolean isPossible = calcIsPossible(expectedResult, numbers, operations);
       //System.out.println(expectedResult + " " + isPossible);
 
       if (isPossible) {
-        possibleCalcs.add(expectedResult);
+        possibleCalcsSum += expectedResult;
       }
     }
 
-    Long sumPossibleCalcs = possibleCalcs.stream().reduce(0L, Long::sum);
-    System.out.println(sumPossibleCalcs);
+    return possibleCalcsSum;
   }
 
-  protected static boolean calcIsPossible(long result, List<Long> numbers) {
+  protected static boolean calcIsPossible(long result, List<Long> numbers, List<ToLongBiFunction<Long, Long>> operations) {
     if (numbers.isEmpty()) {
       return false;
     }
@@ -43,15 +56,11 @@ public class Day7 {
     Long a = numbers.removeFirst();
     Long b = numbers.removeFirst();
 
-    List<Long> list1 = new ArrayList<>(numbers);
-    list1.addFirst(a + b);
-    boolean b1 = calcIsPossible(result, list1);
-
-    List<Long> list2 = new ArrayList<>(numbers);
-    list2.addFirst(a * b);
-    boolean b2 = calcIsPossible(result, list2);
-
-    return b1 || b2;
+    return operations.stream().anyMatch(op -> {
+      List<Long> numbersCopy = new ArrayList<>(numbers);
+      numbersCopy.addFirst(op.applyAsLong(a, b));
+      return calcIsPossible(result, numbersCopy, operations);
+    });
   }
 
 }

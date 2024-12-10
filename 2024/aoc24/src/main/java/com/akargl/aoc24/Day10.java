@@ -22,6 +22,12 @@ public class Day10 {
                 .reduce(0, Integer::sum);
 
         System.out.println("Part 1: " + sumTrailheadScores);
+
+        Integer sumTrailheadRatings = trailheads.stream()
+                .map(th -> findNumPaths(grid, th))
+                .reduce(0, Integer::sum);
+
+        System.out.println("Part 2: " + sumTrailheadRatings);
     }
 
     protected static Set<Coordinate> findPeaks(IntegerGrid grid, Coordinate currentPosition) {
@@ -42,5 +48,25 @@ public class Day10 {
                 .map(p -> findPeaks(grid, p))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+
+    protected static int findNumPaths(IntegerGrid grid, Coordinate currentPosition) {
+        if (currentPosition == null) {
+            return 0;
+        }
+
+        Integer currentHeight = grid.getElement(currentPosition);
+        if (currentHeight == 9) {
+            return 1;
+        }
+
+        List<Coordinate> reachablePositions = List.of(currentPosition.getTop(), currentPosition.getRight(), currentPosition.getBottom(), currentPosition.getLeft()).stream()
+                .filter(p -> grid.getElement(p) != null && grid.getElement(p) == currentHeight + 1)
+                .toList();
+
+        return reachablePositions.stream()
+                .map(p -> findNumPaths(grid, p))
+                .reduce(0, Integer::sum);
+
     }
 }

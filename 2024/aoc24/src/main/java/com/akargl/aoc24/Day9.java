@@ -1,46 +1,52 @@
 package com.akargl.aoc24;
 
 import com.akargl.aoc24.utils.InputUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class Day9 {
     public static void main(String[] args) throws IOException {
-        String input = InputUtils.getInputLines("inputs/d9_sample.txt").getFirst();
+        String input = InputUtils.getInputLines("inputs/d9_1.txt").getFirst();
 
-        List<Block> blocks = parseInput(input);
+        List<Integer> blocks = parseInput(input);
 
-        ListIterator<Block> it = blocks.listIterator(blocks.size());
+        for (int i = blocks.size() - 1; i >= 0; i--) {
+            Integer id = blocks.get(i);
+            if (id != null) {
+                for (int j = 0; j < i; j++) {
+                    if (blocks.get(j) == null) {
+                        blocks.set(j, id);
+                        blocks.set(i, null);
+                        break;
+                    }
+                }
+            }
+        }
 
-        it.previous();
-        System.out.println(it.previousIndex());
-        blocks.addFirst(new Block(0, 0));
-        System.out.println(it.previousIndex());
+        long checksum = 0;
+        for (int i = 0; i < blocks.size(); i++) {
+            if (blocks.get(i) != null) {
+                checksum += blocks.get(i) * i;
+            }
+        }
 
-        System.out.println();
+        System.out.println("Part1: " + checksum);
     }
 
-    protected static List<Block> parseInput(String input) {
-        List<Block> blocks = new ArrayList<>();
+    protected static List<Integer> parseInput(String input) {
+        List<Integer> blocks = new ArrayList<>();
 
         String[] blockStrings = input.split("");
         for (int i = 0; i < blockStrings.length; i++) {
             Integer id = i % 2 == 0 ? i/2 : null;
-            blocks.add(new Block(id, Integer.parseInt(blockStrings[i])));
+            int size = Integer.parseInt(blockStrings[i]);
+            for (int j = 0; j < size; j++) {
+                blocks.add(id);
+            }
         }
 
         return blocks;
-    }
-
-    @Data
-    @AllArgsConstructor
-    protected static class Block {
-        Integer fileId;
-        int size;
     }
 }

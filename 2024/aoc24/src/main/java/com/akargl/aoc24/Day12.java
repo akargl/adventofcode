@@ -80,15 +80,11 @@ public class Day12 {
             return;
         }
 
-        if (sortedEdgeCoords.size() == 1) {
-            area.setNumEdges(area.getNumEdges() + 1);
-        } else {
-            List<Integer> yDiffs = IntStream.range(0, sortedEdgeCoords.size() - 1)
-                .mapToObj(i -> sortedEdgeCoords.get(i + 1).getY() - sortedEdgeCoords.get(i).getY())
-                .toList();
-            long yGaps = yDiffs.stream().filter(diff -> diff > 1).count();
-            area.setNumEdges(area.getNumEdges() + yGaps + 1);
-        }
+        long yGaps = IntStream.range(0, sortedEdgeCoords.size() - 1)
+            .mapToObj(i -> sortedEdgeCoords.get(i + 1).getY() - sortedEdgeCoords.get(i).getY())
+            .filter(diff -> diff > 1)
+            .count();
+        area.setNumEdges(area.getNumEdges() + yGaps + 1);
     }
 
     private static void countHorizontalEdges(Area area, int y, Function<Coordinate, Coordinate> edgeToCheck) {
@@ -103,15 +99,11 @@ public class Day12 {
             return;
         }
 
-        if (sortedEdgeCoords.size() == 1) {
-            area.setNumEdges(area.getNumEdges() + 1);
-        } else {
-            List<Integer> xDiffs = IntStream.range(0, sortedEdgeCoords.size() - 1)
-                .mapToObj(i -> sortedEdgeCoords.get(i + 1).getX() - sortedEdgeCoords.get(i).getX())
-                .toList();
-            long xGaps = xDiffs.stream().filter(diff -> diff > 1).count();
-            area.setNumEdges(area.getNumEdges() + xGaps + 1);
-        }
+        long xGaps = IntStream.range(0, sortedEdgeCoords.size() - 1)
+            .mapToObj(i -> sortedEdgeCoords.get(i + 1).getX() - sortedEdgeCoords.get(i).getX())
+            .filter(diff -> diff > 1)
+            .count();
+        area.setNumEdges(area.getNumEdges() + xGaps + 1);
     }
 
     protected static Set<Coordinate> getArea(Coordinate coord, Grid<GridEntry> grid) {

@@ -44,11 +44,11 @@ public class Day12 {
 
     protected static Set<Coordinate> getArea(Coordinate coord, Grid<GridEntry> grid) {
         GridEntry current = grid.getElement(coord);
-        if (current == null || current.isVisited()) {
+        if (current == null || current.isAssignedToArea()) {
             return null;
         }
 
-        current.setVisited(true);
+        current.setAssignedToArea(true);
 
         Set<Coordinate> area = new HashSet<>();
         area.add(coord);
@@ -59,7 +59,7 @@ public class Day12 {
             }
 
             GridEntry element = grid.getElement(c);
-            if (element != null && !element.isVisited() && element.getPlantType().equals(current.getPlantType())) {
+            if (element != null && !element.isAssignedToArea() && element.getPlantType().equals(current.getPlantType())) {
                 Set<Coordinate> newArea = getArea(c, grid);
                 if (newArea != null) {
                     area.addAll(newArea);
@@ -83,7 +83,7 @@ public class Day12 {
     @AllArgsConstructor
     protected static final class GridEntry {
         private String plantType;
-        private boolean visited;
+        private boolean assignedToArea;
     }
 
 }

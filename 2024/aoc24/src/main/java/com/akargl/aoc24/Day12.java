@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -49,7 +48,6 @@ public class Day12 {
 
         for (int x = 0; x < grid.getWidth(); x++) {
             for (Area area : areas) {
-                //get all coordinates in area that have no horizontal neighbour in area
                 countVerticalEdges(area, x, Coordinate::getLeft);
                 countVerticalEdges(area, x, Coordinate::getRight);
             }
@@ -57,13 +55,14 @@ public class Day12 {
 
         for (int y = 0; y < grid.getHeight(); y++) {
             for (Area area : areas) {
-                //get all coordinates in area that have no horizontal neighbour in area
                 countHorizontalEdges(area, y, Coordinate::getTop);
                 countHorizontalEdges(area, y, Coordinate::getBottom);
             }
         }
 
-        long totalPriceP2 = areas.stream().mapToLong(a -> a.getNumEdges() * a.getCoords().size()).sum();
+        long totalPriceP2 = areas.stream()
+            .mapToLong(Area::getPriceP2)
+            .sum();
 
         System.out.println("Part2 " + totalPriceP2);
     }
@@ -157,6 +156,10 @@ public class Day12 {
 
         protected long getPriceP1() {
             return getPerimeterSize() * coords.size();
+        }
+
+        protected long getPriceP2() {
+            return getNumEdges() * coords.size();
         }
     }
 
